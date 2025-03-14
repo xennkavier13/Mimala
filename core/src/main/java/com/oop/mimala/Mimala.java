@@ -16,13 +16,9 @@ public class Mimala extends ApplicationAdapter {
     private Viewport viewport;
     private OrthographicCamera camera;
     private Texture bg; //test
-    //for movement
-    private float x, y;
-    private float speed = 200f;
-    private boolean isJumping = false;
-    private float jumpHeight = 50f;
-    private float jumpSpeed = 300f;
 
+    //for movement
+    private PlayerMovement input;
 
     //Game Resolution
     private final int WIDTH = 800;
@@ -39,53 +35,30 @@ public class Mimala extends ApplicationAdapter {
 
         camera.position.set(WIDTH / 2f, HEIGHT / 2f, 0);
         camera.update();
-
+        input = new PlayerMovement();
 
         bg = new Texture("bg.png");
     }
 
-    public void input(float delta) {
-        if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-            x += speed * delta;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-            x += -speed * delta;
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !isJumping) {
-            isJumping = true;
-        }
 
-        if(isJumping) {
-            y += jumpSpeed * delta;
 
-            if(y >= jumpHeight) {
-                isJumping = false;
-            }
-
-        } else {
-            if (y > 0) {
-                y -= jumpSpeed * delta;
-            } else {
-                y = 0;
-            }
-        }
-    }
 
     @Override
     public void render() {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
         float delta = Gdx.graphics.getDeltaTime();
-        input(delta);
 
-        camera.position.set(x + testball.getWidth() / 2f, y + testball.getHeight() / 2f, 0);
+        input.input(delta);
+
+        camera.position.set(input.getX() + testball.getWidth() / 2f, input.getY() + testball.getHeight() / 2f, 0);
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
         batch.draw(bg, 0,0, WIDTH, HEIGHT);
 
-        testball.setPosition(x, y);
+        testball.setPosition(input.getX(), input.getY());
         testball.draw(batch);
         batch.end();
     }
