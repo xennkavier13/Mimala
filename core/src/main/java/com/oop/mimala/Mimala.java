@@ -45,12 +45,6 @@ public class Mimala extends ApplicationAdapter {
     }
 
     public void input(float delta) {
-//        if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-//            y += speed * delta;
-//        }
-//        if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-//            y += -speed * delta;
-//        }
         if(Gdx.input.isKeyPressed(Input.Keys.D)) {
             x += speed * delta;
         }
