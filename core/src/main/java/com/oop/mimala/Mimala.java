@@ -39,6 +39,8 @@ public class Mimala extends ApplicationAdapter {
         input = new PlayerMovement();
         cameraController = new CameraController(WIDTH, HEIGHT);
 
+
+
     }
 
 
