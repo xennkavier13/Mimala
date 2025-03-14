@@ -49,7 +49,8 @@ public class Mimala extends ApplicationAdapter {
 
         float delta = Gdx.graphics.getDeltaTime();
 
-        input.input(delta);
+        input.move(delta);
+        input.jump(delta);
 
         camera.position.set(input.getX() + testball.getWidth() / 2f, input.getY() + testball.getHeight() / 2f, 0);
         camera.update();
