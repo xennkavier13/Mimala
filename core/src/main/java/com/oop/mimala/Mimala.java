@@ -16,6 +16,7 @@ public class Mimala extends ApplicationAdapter {
     private Viewport viewport;
     private OrthographicCamera camera;
     private Texture bg; //test
+    private CameraController cameraController;
 
     //for movement
     private PlayerMovement input;
@@ -29,13 +30,12 @@ public class Mimala extends ApplicationAdapter {
     public void create() {
         batch = new SpriteBatch();
         testball = new Sprite(new Texture("testball.png"));
-        camera = new OrthographicCamera();
-        viewport = new FitViewport(WIDTH, HEIGHT, camera);
+
+        viewport = new FitViewport(WIDTH, HEIGHT);
         viewport.apply();
 
-        camera.position.set(WIDTH / 2f, HEIGHT / 2f, 0);
-        camera.update();
         input = new PlayerMovement();
+        cameraController = new CameraController(WIDTH, HEIGHT);
 
         bg = new Texture("bg.png");
     }
@@ -52,9 +52,8 @@ public class Mimala extends ApplicationAdapter {
         input.move(delta);
         input.jump(delta);
 
-        camera.position.set(input.getX() + testball.getWidth() / 2f, input.getY() + testball.getHeight() / 2f, 0);
-        camera.update();
-        batch.setProjectionMatrix(camera.combined);
+        cameraController.follow(testball);
+        batch.setProjectionMatrix(cameraController.getCamera().combined);
 
         batch.begin();
         batch.draw(bg, 0,0, WIDTH, HEIGHT);
