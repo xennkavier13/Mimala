@@ -8,6 +8,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 public class MainMenu {
     private JFrame frame;
+    private JButton exitGameButton;
 
     public MainMenu() {
         frame = new JFrame("Main Menu");
@@ -25,15 +26,29 @@ public class MainMenu {
                 g.drawImage(gifIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
         };
-        background.setLayout(new GridBagLayout()); // Center the button
+        background.setLayout(new GridBagLayout()); // Center the buttons
 
-        // Create Start Button
+        // Button Panel
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new GridLayout(2, 1, 10, 10)); // Space between buttons
+
+        // Start Game Button
         JButton startGameButton = new JButton("Start Game");
         startGameButton.setPreferredSize(new Dimension(200, 50));
         startGameButton.addActionListener(this::startGame);
 
-        // Add Components
-        background.add(startGameButton);
+        // Exit Game Button
+        exitGameButton = new JButton("Exit Game");
+        exitGameButton.setPreferredSize(new Dimension(200, 50));
+        exitGameButton.addActionListener(e -> System.exit(0)); // Close program
+
+        // Add buttons to panel
+        buttonPanel.add(startGameButton);
+        buttonPanel.add(exitGameButton);
+
+        // Add panel to background
+        background.add(buttonPanel);
         frame.add(background, BorderLayout.CENTER);
 
         frame.setVisible(true);

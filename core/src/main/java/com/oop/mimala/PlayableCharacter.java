@@ -18,6 +18,7 @@ public class PlayableCharacter extends Character{
         System.out.println(name + " uses their unique ability!");
     }
 
+
     //still optional
     @Override
     public void displayStats() {
