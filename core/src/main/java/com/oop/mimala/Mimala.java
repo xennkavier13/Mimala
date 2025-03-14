@@ -29,7 +29,9 @@ public class Mimala extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        testball = new Sprite(new Texture("testball.png"));
+        testball = new Sprite(new Texture(Gdx.files.internal("testball.png")));
+        bg = new Texture(Gdx.files.internal("bg.png"));
+
 
         viewport = new FitViewport(WIDTH, HEIGHT);
         viewport.apply();
@@ -37,7 +39,6 @@ public class Mimala extends ApplicationAdapter {
         input = new PlayerMovement();
         cameraController = new CameraController(WIDTH, HEIGHT);
 
-        bg = new Texture("bg.png");
     }
 
 
