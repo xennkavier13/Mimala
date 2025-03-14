@@ -10,12 +10,12 @@ import java.io.IOException;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
-
 public class MainMenu {
     private JFrame frame;
     private JButton exitGameButton;
+    private JButton startGameButton;
+    private JPanel panel1;
     private Clip musicClip;
-
 
     public MainMenu() {
         frame = new JFrame("Main Menu");
@@ -36,21 +36,21 @@ public class MainMenu {
         background.setLayout(new GridBagLayout()); // Center the buttons
 
         // Button Panel
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setOpaque(false);
-        buttonPanel.setLayout(new GridLayout(2, 1, 10, 10)); // Space between buttons
+        panel1 = new JPanel();
+        panel1.setOpaque(false);
+        panel1.setLayout(new GridLayout(0, 1, 10, -10)); // Space between buttons
 
         // Start Game Button
-        JButton startGameButton = createImageButton(
+        startGameButton = createImageButton(
             "assets/Start/StartGame_Off.png",
             "assets/Start/StartGame_Hover.png",
-            "assets/Start/StartGame_Hover.png" // Same as hover for pressed state
+            "assets/Start/StartGame_Hover.png"
         );
         startGameButton.setPreferredSize(new Dimension(1000, 100));
         startGameButton.addActionListener(this::startGame);
 
         // Exit Game Button
-        JButton exitGameButton = createImageButton(
+        exitGameButton = createImageButton(
             "assets/End/EndGame_Off.png",
             "assets/End/EndGame_Hover.png",
             "assets/End/EndGame_Hover.png"
@@ -60,11 +60,18 @@ public class MainMenu {
         exitGameButton.addActionListener(e -> System.exit(0)); // Close program
 
         // Add buttons to panel
-        buttonPanel.add(startGameButton);
-        buttonPanel.add(exitGameButton);
+        panel1.add(startGameButton);
+        panel1.add(exitGameButton);
 
-        // Add panel to background
-        background.add(buttonPanel);
+        // Add panel to background (Lower the buttons using GridBagConstraints)
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weighty = 1; // Push content vertically
+        gbc.anchor = GridBagConstraints.SOUTH; // Align to the bottom
+        gbc.insets = new Insets(0, 0, 350, 0); // Top, Left, Bottom, Right padding (Adjust top to lower buttons)
+
+        background.add(panel1, gbc);
         frame.add(background, BorderLayout.CENTER);
 
         frame.setVisible(true);
@@ -93,10 +100,13 @@ public class MainMenu {
         }, config);
     }
 
-
     private void playBackgroundMusic(String filePath) {
         try {
             File audioFile = new File(filePath);
+            if (!audioFile.exists()) {
+                System.err.println("Audio file not found: " + filePath);
+                return;
+            }
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
             musicClip = AudioSystem.getClip();
             musicClip.open(audioStream);
@@ -147,9 +157,7 @@ public class MainMenu {
         return button;
     }
 
-
     public static void main(String[] args) {
         SwingUtilities.invokeLater(MainMenu::new);
     }
-
 }

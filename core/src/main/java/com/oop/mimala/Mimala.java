@@ -88,8 +88,8 @@ public class Mimala extends ApplicationAdapter {
         });
 
 // Add buttons to window
-        window.add(resumeButton).pad(20).row();
-        window.add(exitButton).pad(20).row();
+        window.add(resumeButton).pad(10).row();
+        window.add(exitButton).pad(10).row();
 
         table.add(window).center();
 
