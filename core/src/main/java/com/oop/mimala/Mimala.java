@@ -21,7 +21,6 @@ public class Mimala extends ApplicationAdapter {
     private SpriteBatch batch;
     private Sprite testball;
     private Viewport viewport;
-    private OrthographicCamera camera;
     private Texture bg;
 
     private boolean isPaused = false;

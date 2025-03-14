@@ -1,14 +1,21 @@
 package com.oop.mimala;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+
 
 public class MainMenu {
     private JFrame frame;
     private JButton exitGameButton;
+    private Clip musicClip;
+
 
     public MainMenu() {
         frame = new JFrame("Main Menu");
@@ -52,9 +59,12 @@ public class MainMenu {
         frame.add(background, BorderLayout.CENTER);
 
         frame.setVisible(true);
+
+        playBackgroundMusic("assets/mimala_music.wav");
     }
 
     private void startGame(ActionEvent e) {
+        stopBackgroundMusic(); // Stop the background music before launching the game
         frame.setVisible(false); // Hide menu instead of closing it
 
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
@@ -66,9 +76,33 @@ public class MainMenu {
             @Override
             public void dispose() {
                 super.dispose();
-                SwingUtilities.invokeLater(() -> frame.setVisible(true)); // Show menu when game closes
+                SwingUtilities.invokeLater(() -> {
+                    frame.setVisible(true); // Show menu when game closes
+                    playBackgroundMusic("assets/mimala_music.wav"); // Restart music when returning to the menu
+                });
             }
         }, config);
+    }
+
+
+    private void playBackgroundMusic(String filePath) {
+        try {
+            File audioFile = new File(filePath);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+            musicClip = AudioSystem.getClip();
+            musicClip.open(audioStream);
+            musicClip.loop(Clip.LOOP_CONTINUOUSLY); // Loop forever
+            musicClip.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stopBackgroundMusic() {
+        if (musicClip != null && musicClip.isRunning()) {
+            musicClip.stop();
+            musicClip.close();
+        }
     }
 
     public static void main(String[] args) {
