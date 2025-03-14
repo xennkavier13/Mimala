@@ -3,7 +3,7 @@ package com.oop.mimala;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -18,10 +18,58 @@ public class MainMenu {
     private Clip musicClip;
 
     public MainMenu() {
-        frame = new JFrame("Main Menu");
+        showIntroScreen();
+    }
+
+    private void showIntroScreen() {
+        frame = new JFrame("Intro");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setUndecorated(true); // Remove window borders
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // Fullscreen
+        frame.setUndecorated(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        ImageIcon introGif = new ImageIcon("assets/MainMenuIntro.gif");
+        JLabel introLabel = new JLabel(introGif);
+        introLabel.setLayout(new BorderLayout());
+
+        JPanel clickPanel = new JPanel(new GridBagLayout());
+        clickPanel.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(400, 0, 0, 0);
+
+        clickPanel.add(new JLabel(), gbc);
+        introLabel.add(clickPanel, BorderLayout.CENTER);
+
+        frame.add(introLabel);
+
+        introLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                showMainMenu();
+            }
+        });
+
+        frame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    showMainMenu();
+                }
+            }
+        });
+
+        frame.setVisible(true);
+
+        playBackgroundMusic("assets/mimala_music.wav");
+    }
+
+    private void showMainMenu() {
+        frame.getContentPane().removeAll();
+        frame.repaint();
+
+        frame.setTitle("Main Menu");
         frame.setLayout(new BorderLayout());
 
         // Load Background GIF (Scaling)
@@ -33,12 +81,12 @@ public class MainMenu {
                 g.drawImage(gifIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
         };
-        background.setLayout(new GridBagLayout()); // Center the buttons
+        background.setLayout(new GridBagLayout());
 
         // Button Panel
         panel1 = new JPanel();
         panel1.setOpaque(false);
-        panel1.setLayout(new GridLayout(0, 1, 10, -10)); // Space between buttons
+        panel1.setLayout(new GridLayout(0, 1, 10, 5)); // Reduced space between buttons
 
         // Start Game Button
         startGameButton = createImageButton(
@@ -57,7 +105,7 @@ public class MainMenu {
         );
 
         exitGameButton.setPreferredSize(new Dimension(1000, 100));
-        exitGameButton.addActionListener(e -> System.exit(0)); // Close program
+        exitGameButton.addActionListener(e -> System.exit(0));
 
         // Add buttons to panel
         panel1.add(startGameButton);
@@ -67,21 +115,20 @@ public class MainMenu {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weighty = 1; // Push content vertically
-        gbc.anchor = GridBagConstraints.SOUTH; // Align to the bottom
-        gbc.insets = new Insets(0, 0, 350, 0); // Top, Left, Bottom, Right padding (Adjust top to lower buttons)
+        gbc.weighty = 1;
+        gbc.anchor = GridBagConstraints.SOUTH;
+        gbc.insets = new Insets(0, 0, 350, 0);
 
         background.add(panel1, gbc);
         frame.add(background, BorderLayout.CENTER);
 
-        frame.setVisible(true);
-
-        playBackgroundMusic("assets/mimala_music.wav");
+        frame.revalidate();
+        frame.repaint();
     }
 
     private void startGame(ActionEvent e) {
-        stopBackgroundMusic(); // Stop the background music before launching the game
-        frame.setVisible(false); // Hide menu instead of closing it
+        stopBackgroundMusic();
+        frame.setVisible(false);
 
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setTitle("Mimala Game");
@@ -93,8 +140,8 @@ public class MainMenu {
             public void dispose() {
                 super.dispose();
                 SwingUtilities.invokeLater(() -> {
-                    frame.setVisible(true); // Show menu when game closes
-                    playBackgroundMusic("assets/mimala_music.wav"); // Restart music when returning to the menu
+                    frame.setVisible(true);
+                    playBackgroundMusic("assets/mimala_music.wav");
                 });
             }
         }, config);
@@ -110,7 +157,7 @@ public class MainMenu {
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
             musicClip = AudioSystem.getClip();
             musicClip.open(audioStream);
-            musicClip.loop(Clip.LOOP_CONTINUOUSLY); // Loop forever
+            musicClip.loop(Clip.LOOP_CONTINUOUSLY);
             musicClip.start();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
@@ -124,7 +171,6 @@ public class MainMenu {
         }
     }
 
-    // Create a custom button with images
     private JButton createImageButton(String normalPath, String hoverPath, String pressedPath) {
         JButton button = new JButton(new ImageIcon(normalPath));
 
@@ -155,6 +201,15 @@ public class MainMenu {
         });
 
         return button;
+    }
+
+    private Font loadTrajanProFont(float size) {
+        try {
+            return Font.createFont(Font.TRUETYPE_FONT, new File("assets/fonts/TrajanPro-Regular.ttf")).deriveFont(size);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+            return new Font("Serif", Font.PLAIN, (int) size);
+        }
     }
 
     public static void main(String[] args) {
