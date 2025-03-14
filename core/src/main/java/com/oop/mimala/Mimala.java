@@ -44,48 +44,12 @@ public class Mimala extends ApplicationAdapter {
         bg = new Texture("bg.png");
     }
 
-    public void input(float delta) {
-//        if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-//            y += speed * delta;
-//        }
-//        if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-//            y += -speed * delta;
-//        }
-        if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-            x += speed * delta;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-            x += -speed * delta;
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !isJumping) {
-            isJumping = true;
-        }
-
-        if(isJumping) {
-            y += jumpSpeed * delta;
-
-            if(y >= jumpHeight) {
-                isJumping = false;
-            }
-
-        } else {
-            if (y > 0) {
-                y -= jumpSpeed * delta;
-            } else {
-                y = 0;
-            }
-        }
-
-    }
 
     @Override
     public void render() {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
-        float delta = Gdx.graphics.getDeltaTime();
-        input(delta);
 
-        // ✅ Corrected camera position update
         camera.position.set(x + testball.getWidth() / 2f, y + testball.getHeight() / 2f, 0);
         camera.update();
         batch.setProjectionMatrix(camera.combined);
