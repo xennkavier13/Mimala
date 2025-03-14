@@ -75,7 +75,6 @@ public class Mimala extends ApplicationAdapter {
                 y = 0;
             }
         }
-
     }
 
     @Override
@@ -85,7 +84,6 @@ public class Mimala extends ApplicationAdapter {
         float delta = Gdx.graphics.getDeltaTime();
         input(delta);
 
-        // ✅ Corrected camera position update
         camera.position.set(x + testball.getWidth() / 2f, y + testball.getHeight() / 2f, 0);
         camera.update();
         batch.setProjectionMatrix(camera.combined);
