@@ -41,13 +41,22 @@ public class MainMenu {
         buttonPanel.setLayout(new GridLayout(2, 1, 10, 10)); // Space between buttons
 
         // Start Game Button
-        JButton startGameButton = new JButton("Start Game");
-        startGameButton.setPreferredSize(new Dimension(200, 50));
+        JButton startGameButton = createImageButton(
+            "assets/Start/StartGame_Off.png",
+            "assets/Start/StartGame_Hover.png",
+            "assets/Start/StartGame_Hover.png" // Same as hover for pressed state
+        );
+        startGameButton.setPreferredSize(new Dimension(1000, 100));
         startGameButton.addActionListener(this::startGame);
 
         // Exit Game Button
-        exitGameButton = new JButton("Exit Game");
-        exitGameButton.setPreferredSize(new Dimension(200, 50));
+        JButton exitGameButton = createImageButton(
+            "assets/End/EndGame_Off.png",
+            "assets/End/EndGame_Hover.png",
+            "assets/End/EndGame_Hover.png"
+        );
+
+        exitGameButton.setPreferredSize(new Dimension(1000, 100));
         exitGameButton.addActionListener(e -> System.exit(0)); // Close program
 
         // Add buttons to panel
@@ -105,7 +114,42 @@ public class MainMenu {
         }
     }
 
+    // Create a custom button with images
+    private JButton createImageButton(String normalPath, String hoverPath, String pressedPath) {
+        JButton button = new JButton(new ImageIcon(normalPath));
+
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setIcon(new ImageIcon(hoverPath));
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setIcon(new ImageIcon(normalPath));
+            }
+
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                button.setIcon(new ImageIcon(pressedPath));
+            }
+
+            @Override
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                button.setIcon(new ImageIcon(hoverPath));
+            }
+        });
+
+        return button;
+    }
+
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(MainMenu::new);
     }
+
 }
