@@ -37,7 +37,7 @@ public class MainMenu {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(400, 0, 0, 0);
+        gbc.insets = new Insets(450, 0, 0, 0);
 
         clickPanel.add(new JLabel(), gbc);
         introLabel.add(clickPanel, BorderLayout.CENTER);
@@ -134,7 +134,7 @@ public class MainMenu {
         gbc.gridy = 0;
         gbc.weighty = 1;
         gbc.anchor = GridBagConstraints.SOUTH;
-        gbc.insets = new Insets(0, 0, 350, 0);
+        gbc.insets = new Insets(0, 0, 200, 0);
 
         background.add(panel1, gbc);
         frame.add(background, BorderLayout.CENTER);
