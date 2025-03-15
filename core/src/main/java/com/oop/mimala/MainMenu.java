@@ -157,6 +157,12 @@ public class MainMenu {
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
             musicClip = AudioSystem.getClip();
             musicClip.open(audioStream);
+
+            FloatControl gainControl = (FloatControl) musicClip.getControl(FloatControl.Type.MASTER_GAIN);
+
+            float volumeReduction = -10.0f; // Reduce volume by 10 decibels (adjust as needed)
+            gainControl.setValue(volumeReduction);
+
             musicClip.loop(Clip.LOOP_CONTINUOUSLY);
             musicClip.start();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
@@ -171,6 +177,23 @@ public class MainMenu {
         }
     }
 
+    private void playSelectSound() {
+        try {
+            File audioFile = new File("assets/select_menu.wav");
+            if (!audioFile.exists()) {
+                System.err.println("Audio file not found: assets/select_menu.wav");
+                return;
+            }
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private JButton createImageButton(String normalPath, String hoverPath, String pressedPath) {
         JButton button = new JButton(new ImageIcon(normalPath));
 
@@ -182,6 +205,7 @@ public class MainMenu {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 button.setIcon(new ImageIcon(hoverPath));
+                playSelectSound();
             }
 
             @Override
