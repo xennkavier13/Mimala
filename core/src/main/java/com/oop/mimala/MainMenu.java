@@ -47,6 +47,7 @@ public class MainMenu {
         introLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                playSound("assets/sounds/enter_mainmenu.wav");
                 showMainMenu();
             }
         });
@@ -62,7 +63,23 @@ public class MainMenu {
 
         frame.setVisible(true);
 
-        playBackgroundMusic("assets/mimala_music.wav");
+        playBackgroundMusic("assets/sounds/mimala_music.wav");
+    }
+
+    private void playSound(String filePath) {
+        try {
+            File audioFile = new File(filePath);
+            if (!audioFile.exists()) {
+                System.err.println("Audio file not found: " + filePath);
+                return;
+            }
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start(); // Play the sound once
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showMainMenu() {
@@ -141,7 +158,7 @@ public class MainMenu {
                 super.dispose();
                 SwingUtilities.invokeLater(() -> {
                     frame.setVisible(true);
-                    playBackgroundMusic("assets/mimala_music.wav");
+                    playBackgroundMusic("assets/sounds/mimala_music.wav");
                 });
             }
         }, config);
@@ -160,7 +177,7 @@ public class MainMenu {
 
             FloatControl gainControl = (FloatControl) musicClip.getControl(FloatControl.Type.MASTER_GAIN);
 
-            float volumeReduction = -10.0f; // Reduce volume by 10 decibels (adjust as needed)
+            float volumeReduction = -20.0f; // Reduce volume by 10 decibels (adjust as needed)
             gainControl.setValue(volumeReduction);
 
             musicClip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -179,7 +196,7 @@ public class MainMenu {
 
     private void playSelectSound() {
         try {
-            File audioFile = new File("assets/select_menu.wav");
+            File audioFile = new File("assets/sounds/select_menu.wav");
             if (!audioFile.exists()) {
                 System.err.println("Audio file not found: assets/select_menu.wav");
                 return;
