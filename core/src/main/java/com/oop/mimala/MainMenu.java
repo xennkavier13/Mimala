@@ -28,7 +28,17 @@ public class MainMenu {
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         ImageIcon introGif = new ImageIcon("assets/MainMenuIntro.gif");
-        JLabel introLabel = new JLabel(introGif);
+        JLabel introLabel = new JLabel(introGif) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Scale the image to fit the label
+                g.drawImage(introGif.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+
+
+
         introLabel.setLayout(new BorderLayout());
 
         JPanel clickPanel = new JPanel(new GridBagLayout());
