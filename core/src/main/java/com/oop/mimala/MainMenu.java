@@ -157,21 +157,23 @@ public class MainMenu {
         stopBackgroundMusic();
         frame.setVisible(false);
 
-        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        config.setTitle("Mimala Game");
-        config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
-        config.useVsync(true);
+        new CutsceneAct1(() -> {
+            Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+            config.setTitle("Mimala Game");
+            config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
+            config.useVsync(true);
 
-        new Lwjgl3Application(new Mimala() {
-            @Override
-            public void dispose() {
-                super.dispose();
-                SwingUtilities.invokeLater(() -> {
-                    frame.setVisible(true);
-                    playBackgroundMusic("assets/sounds/mimala_music.wav");
-                });
-            }
-        }, config);
+            new Lwjgl3Application(new Mimala() {
+                @Override
+                public void dispose() {
+                    super.dispose();
+                    SwingUtilities.invokeLater(() -> {
+                        frame.setVisible(true);
+                        playBackgroundMusic("assets/sounds/mimala_music.wav");
+                    });
+                }
+            }, config);
+        });
     }
 
     private void playBackgroundMusic(String filePath) {
