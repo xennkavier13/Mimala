@@ -113,7 +113,7 @@ public class MainMenu {
         // Button Panel
         panel1 = new JPanel();
         panel1.setOpaque(false);
-        panel1.setLayout(new GridLayout(0, 1, 10, -5)); // Reduced space between buttons
+        panel1.setLayout(new GridLayout(0, 1, 10, -15)); // Reduced space between buttons
 
         // Start Game Button
         startGameButton = createImageButton(
