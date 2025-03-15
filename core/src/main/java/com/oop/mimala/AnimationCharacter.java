@@ -15,14 +15,14 @@ public class AnimationCharacter {
     private TextureRegion currentFrame;
     private Array<Texture> textures;
     private boolean isMoving = false;
+    private boolean facingRight = true; // ✅ Track direction
 
-    public AnimationCharacter(float startX, float startY) { // ✅ Receive initial position
+    public AnimationCharacter(float startX, float startY) {
         stateTime = 0f;
         this.x = startX;
         this.y = startY;
         textures = new Array<>();
 
-        // Load walking animation
         Array<TextureRegion> walkFrames = loadFrames(new String[]{
             "milo_walking/milo_walking1.png",
             "milo_walking/milo_walking2.png",
@@ -32,7 +32,6 @@ public class AnimationCharacter {
             "milo_walking/milo_walking6.png"
         });
 
-        // Load idle animation
         Array<TextureRegion> idleFrames = loadFrames(new String[]{
             "milo_standing/milo_standing1.png",
             "milo_standing/milo_standing2.png",
@@ -42,7 +41,6 @@ public class AnimationCharacter {
             "milo_standing/milo_standing6.png"
         });
 
-        // Create animations
         if (walkFrames.size > 0) {
             walkAnimation = new Animation<>(0.1f, walkFrames, Animation.PlayMode.LOOP);
         }
@@ -75,11 +73,22 @@ public class AnimationCharacter {
             currentFrame = idleAnimation.getKeyFrame(stateTime);
         }
 
-        System.out.println("Character Position -> X: " + x + ", Y: " + y); // ✅ Debug movement
+        // ✅ Flip character when direction changes
+        if (velocityX > 0) {
+            facingRight = true;
+        } else if (velocityX < 0) {
+            facingRight = false;
+        }
     }
 
     public void render(SpriteBatch batch) {
         if (currentFrame != null) {
+            if (!facingRight && !currentFrame.isFlipX()) {
+                currentFrame.flip(true, false); // ✅ Flip left
+            } else if (facingRight && currentFrame.isFlipX()) {
+                currentFrame.flip(true, false); // ✅ Flip right
+            }
+
             batch.draw(currentFrame, x, y);
         }
     }
@@ -91,7 +100,7 @@ public class AnimationCharacter {
     }
 
     public void move(float dx, float dy) {
-        this.x = dx; // ✅ Use absolute positioning
+        this.x = dx;
         this.y = dy;
     }
 
