@@ -9,29 +9,28 @@ public class PlayerMovement {
     private boolean isJumping = false;
     private float jumpHeight = 50f;
     private float jumpSpeed = 300f;
+    private float velocityX = 0;
 
-    private float velocityX = 0; // Add velocity tracking
-
-    public PlayerMovement() {
-        this.x = 0;
-        this.y = 0;
+    public PlayerMovement(float startX, float startY) { // ✅ Initialize at character position
+        this.x = startX;
+        this.y = startY;
     }
 
     public float getX() { return x; }
     public float getY() { return y; }
-    public float getVelocityX() { return velocityX; } // New method to get velocity
+    public float getVelocityX() { return velocityX; }
 
     public void move(float delta) {
-        velocityX = 0; // Reset velocity each frame
+        velocityX = 0;
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            velocityX = speed; // Move right
+            velocityX = speed;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            velocityX = -speed; // Move left
+            velocityX = -speed;
         }
 
-        x += velocityX * delta; // Apply movement
+        x += velocityX * delta; // ✅ Apply movement
     }
 
     public void jump(float delta) {
@@ -53,6 +52,3 @@ public class PlayerMovement {
         }
     }
 }
-
-
-

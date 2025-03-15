@@ -2,7 +2,6 @@ package com.oop.mimala;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -11,13 +10,13 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Mimala extends ApplicationAdapter {
     private SpriteBatch batch;
-    private Sprite testball;
     private Texture bg;
 
     private Viewport viewport;
 
     private CameraController cameraController;
     private PlayerMovement input;
+    private AnimationCharacter animationCharacter;
 
     private PauseMenu pauseMenu;
 
@@ -27,14 +26,14 @@ public class Mimala extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        testball = new Sprite(new Texture(Gdx.files.internal("testball.png")));
         bg = new Texture(Gdx.files.internal("bg.jpg"));
 
         viewport = new FitViewport(WIDTH, HEIGHT);
         viewport.apply();
 
-        input = new PlayerMovement();
+        input = new PlayerMovement(100, 50); // ✅ Pass starting position
         cameraController = new CameraController(WIDTH, HEIGHT);
+        animationCharacter = new AnimationCharacter(100, 50); // ✅ Match PlayerMovement
 
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
         pauseMenu = new PauseMenu(skin, WIDTH, HEIGHT);
@@ -60,15 +59,22 @@ public class Mimala extends ApplicationAdapter {
         input.move(delta);
         input.jump(delta);
 
-        cameraController.follow(testball);
+        float velocityX = input.getVelocityX();
+        animationCharacter.update(delta, velocityX);
+
+        // ✅ Move character based on input
+        animationCharacter.move(input.getX(), input.getY());
+
+        cameraController.follow(animationCharacter);
+
         batch.setProjectionMatrix(cameraController.getCamera().combined);
 
         batch.begin();
         batch.draw(bg, 0, 0, WIDTH, HEIGHT);
-        testball.setPosition(input.getX(), input.getY());
-        testball.draw(batch);
+        animationCharacter.render(batch);
         batch.end();
     }
+
 
     @Override
     public void resize(int width, int height) {
@@ -79,7 +85,7 @@ public class Mimala extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
         bg.dispose();
-        testball.getTexture().dispose();
         pauseMenu.dispose();
+        animationCharacter.dispose();
     }
 }

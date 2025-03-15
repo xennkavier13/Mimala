@@ -13,10 +13,17 @@ public class CameraController {
         camera.update();
     }
 
-    public void follow(Sprite target) {
-        camera.position.set(target.getX() + target.getWidth() / 2f, target.getY() + target.getHeight() / 2f, 0);
+    public void follow(Object target) {
+        if (target instanceof Sprite) {
+            Sprite sprite = (Sprite) target;
+            camera.position.set(sprite.getX() + sprite.getWidth() / 2f, sprite.getY() + sprite.getHeight() / 2f, 0);
+        } else if (target instanceof AnimationCharacter) {
+            AnimationCharacter character = (AnimationCharacter) target;
+            camera.position.set(character.getX(), character.getY(), 0);
+        }
         camera.update();
     }
+
 
     public OrthographicCamera getCamera() {
         return camera;
