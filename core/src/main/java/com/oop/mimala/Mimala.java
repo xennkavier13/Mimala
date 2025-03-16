@@ -3,10 +3,10 @@ package com.oop.mimala;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.oop.mimala.characters.SantoCharacter;
 
 public class Mimala extends ApplicationAdapter {
     private SpriteBatch batch;
@@ -17,11 +17,9 @@ public class Mimala extends ApplicationAdapter {
     private PlayerMovement input;
     private BaseCharacter playerCharacter;
     private PauseMenu pauseMenu;
-    private CharacterSelectionMenu characterSelectionMenu;
 
     private final int WIDTH = 800;
     private final int HEIGHT = 600;
-    private boolean gameStarted = false;
 
     @Override
     public void create() {
@@ -31,29 +29,18 @@ public class Mimala extends ApplicationAdapter {
         viewport = new FitViewport(WIDTH, HEIGHT);
         viewport.apply();
 
-        Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-        pauseMenu = new PauseMenu(skin, WIDTH, HEIGHT);
-        characterSelectionMenu = new CharacterSelectionMenu(skin,WIDTH, HEIGHT, this);
+        pauseMenu = new PauseMenu();
 
-        Gdx.input.setCursorCatched(false); // ✅ Cursor visible in selection screen
-    }
+        // ✅ Initialize the game with Santo as the first character
+        playerCharacter = new SantoCharacter(100,50);
+        input = new PlayerMovement(playerCharacter.getX(), playerCharacter.getY());
+        cameraController = new CameraController(WIDTH, HEIGHT);
 
-    public void startGame(BaseCharacter selectedCharacter) {
-        this.playerCharacter = selectedCharacter;
-        this.input = new PlayerMovement(playerCharacter.getX(), playerCharacter.getY());
-        this.cameraController = new CameraController(WIDTH, HEIGHT);
-        this.gameStarted = true;
-
-        Gdx.input.setCursorCatched(true); // ✅ Hide cursor after selecting a character
+        Gdx.input.setCursorCatched(true); // ✅ Hide cursor during gameplay
     }
 
     @Override
     public void render() {
-        if (!gameStarted) {
-            characterSelectionMenu.render(); // ✅ Show selection menu before game starts
-            return;
-        }
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             pauseMenu.togglePause();
         }
@@ -94,7 +81,6 @@ public class Mimala extends ApplicationAdapter {
         batch.dispose();
         bg.dispose();
         pauseMenu.dispose();
-        characterSelectionMenu = null; // ✅ Cleanup selection menu
         if (playerCharacter != null) {
             playerCharacter.dispose();
         }
