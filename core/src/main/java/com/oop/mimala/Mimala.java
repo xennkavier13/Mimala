@@ -33,7 +33,7 @@ public class Mimala extends ApplicationAdapter {
 
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
         pauseMenu = new PauseMenu(skin, WIDTH, HEIGHT);
-        characterSelectionMenu = new CharacterSelectionMenu(skin, WIDTH, HEIGHT, this);
+        characterSelectionMenu = new CharacterSelectionMenu(skin,WIDTH, HEIGHT, this);
 
         Gdx.input.setCursorCatched(false); // ✅ Cursor visible in selection screen
     }

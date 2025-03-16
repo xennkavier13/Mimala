@@ -52,13 +52,19 @@ public abstract class BaseCharacter {
         isMoving = velocityX != 0;
         isAttacking = attack;
 
-        if (isAttacking && attackAnimation != null) {
-            currentFrame = attackAnimation.getKeyFrame(stateTime, false);
+        if (isAttacking) {
+            if (attackAnimation != null) {
+                currentFrame = attackAnimation.getKeyFrame(stateTime);
+                if (attackAnimation.isAnimationFinished(stateTime)) {
+                    isAttacking = false; // ✅ Stop attacking after the full animation
+                }
+            }
         } else if (isMoving && walkAnimation != null) {
-            currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+            currentFrame = walkAnimation.getKeyFrame(stateTime);
         } else if (!isMoving && idleAnimation != null) {
-            currentFrame = idleAnimation.getKeyFrame(stateTime, true);
+            currentFrame = idleAnimation.getKeyFrame(stateTime);
         }
+
 
         // ✅ Flip character when direction changes
         if (velocityX > 0) {

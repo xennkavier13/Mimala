@@ -46,7 +46,7 @@ public class MiloCharacter extends BaseCharacter {
             idleAnimation = new Animation<>(0.2f, idleFrames, Animation.PlayMode.LOOP);
         }
         if (attackFrames.size > 0) {
-            attackAnimation = new Animation<>(0.05f, attackFrames, Animation.PlayMode.NORMAL);
+            attackAnimation = new Animation<>(0.15f, attackFrames, Animation.PlayMode.NORMAL);
         }
     }
 }

@@ -27,8 +27,8 @@ public class CharacterSelectionMenu {
         Label titleLabel = new Label("Choose Your Character", skin);
 
         TextButton miloButton = new TextButton("Milo", skin);
-        TextButton char2Button = new TextButton("Lola", skin);
-        TextButton char3Button = new TextButton("Santo", skin);
+        TextButton lolaButton = new TextButton("Lola", skin);
+        TextButton santoButton = new TextButton("Santo", skin);
 
         miloButton.addListener(new ChangeListener() {
             @Override
@@ -37,25 +37,25 @@ public class CharacterSelectionMenu {
             }
         });
 
-        char2Button.addListener(new ChangeListener() {
+        lolaButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.startGame(new LolaCharacter(100, 50)); // ✅ Replace with actual class
+                game.startGame(new LolaCharacter(100, 50));
             }
         });
 
-        char3Button.addListener(new ChangeListener() {
+        santoButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.startGame(new SantoCharacter(100, 50)); // ✅ Replace with actual class
+                game.startGame(new SantoCharacter(100, 50));
             }
         });
 
-        table.add(titleLabel).colspan(3).padBottom(20);
+        table.add(titleLabel).colspan(3).padBottom(30);
         table.row();
-        table.add(miloButton).pad(10);
-        table.add(char2Button).pad(10);
-        table.add(char3Button).pad(10);
+        table.add(miloButton).pad(20);
+        table.add(lolaButton).pad(20);
+        table.add(santoButton).pad(20);
     }
 
     public void render() {
