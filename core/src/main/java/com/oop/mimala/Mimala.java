@@ -13,15 +13,15 @@ public class Mimala extends ApplicationAdapter {
     private Texture bg;
 
     private Viewport viewport;
-
     private CameraController cameraController;
     private PlayerMovement input;
-    private AnimationCharacter animationCharacter;
-
+    private BaseCharacter playerCharacter;
     private PauseMenu pauseMenu;
+    private CharacterSelectionMenu characterSelectionMenu;
 
     private final int WIDTH = 800;
     private final int HEIGHT = 600;
+    private boolean gameStarted = false;
 
     @Override
     public void create() {
@@ -31,18 +31,29 @@ public class Mimala extends ApplicationAdapter {
         viewport = new FitViewport(WIDTH, HEIGHT);
         viewport.apply();
 
-        input = new PlayerMovement(100, 50); // ✅ Pass starting position
-        cameraController = new CameraController(WIDTH, HEIGHT);
-        animationCharacter = new AnimationCharacter(100, 50); // ✅ Match PlayerMovement
-
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
         pauseMenu = new PauseMenu(skin, WIDTH, HEIGHT);
+        characterSelectionMenu = new CharacterSelectionMenu(skin, WIDTH, HEIGHT, this);
 
-        Gdx.input.setCursorCatched(true);
+        Gdx.input.setCursorCatched(false); // ✅ Cursor visible in selection screen
+    }
+
+    public void startGame(BaseCharacter selectedCharacter) {
+        this.playerCharacter = selectedCharacter;
+        this.input = new PlayerMovement(playerCharacter.getX(), playerCharacter.getY());
+        this.cameraController = new CameraController(WIDTH, HEIGHT);
+        this.gameStarted = true;
+
+        Gdx.input.setCursorCatched(true); // ✅ Hide cursor after selecting a character
     }
 
     @Override
     public void render() {
+        if (!gameStarted) {
+            characterSelectionMenu.render(); // ✅ Show selection menu before game starts
+            return;
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             pauseMenu.togglePause();
         }
@@ -56,25 +67,22 @@ public class Mimala extends ApplicationAdapter {
 
         float delta = Gdx.graphics.getDeltaTime();
 
+        // ✅ Update movement & character animations
         input.move(delta);
         input.jump(delta);
+        playerCharacter.update(delta, input.getVelocityX(), Gdx.input.isButtonJustPressed(Input.Buttons.LEFT));
 
-        float velocityX = input.getVelocityX();
-        animationCharacter.update(delta, velocityX);
-
-        // ✅ Move character based on input
-        animationCharacter.move(input.getX(), input.getY());
-
-        cameraController.follow(animationCharacter);
+        // ✅ Sync movement with PlayerMovement
+        playerCharacter.move(input.getX(), input.getY());
+        cameraController.follow(playerCharacter);
 
         batch.setProjectionMatrix(cameraController.getCamera().combined);
 
         batch.begin();
         batch.draw(bg, 0, 0, WIDTH, HEIGHT);
-        animationCharacter.render(batch);
+        playerCharacter.render(batch);
         batch.end();
     }
-
 
     @Override
     public void resize(int width, int height) {
@@ -86,6 +94,9 @@ public class Mimala extends ApplicationAdapter {
         batch.dispose();
         bg.dispose();
         pauseMenu.dispose();
-        animationCharacter.dispose();
+        characterSelectionMenu = null; // ✅ Cleanup selection menu
+        if (playerCharacter != null) {
+            playerCharacter.dispose();
+        }
     }
 }
