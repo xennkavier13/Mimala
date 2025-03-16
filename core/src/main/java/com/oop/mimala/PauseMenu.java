@@ -1,6 +1,7 @@
 package com.oop.mimala;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -20,9 +21,10 @@ public class PauseMenu {
 
         // ✅ Full-screen semi-transparent overlay
         Image overlay = new Image(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/pause_overlay.png")))));
-        overlay.setColor(1, 1, 1, 0.5f); // Set transparency (50%)
+        overlay.setColor(1,1,1,0.5f);
         overlay.setFillParent(true); // ✅ Ensure it covers the whole screen
         stage.addActor(overlay);
+
 
         // ✅ Table for buttons
         Table table = new Table();
@@ -31,7 +33,7 @@ public class PauseMenu {
 
         // ✅ Resume Button (Image)
         ImageButton resumeButton = createImageButton(
-            "ui/Pause/Resume/resume_normal.png",
+            "ui/Pause/Resume/resume_off.png",
             "ui/Pause/Resume/resume_hover.png",
             "ui/Pause/Resume/resume_hover.png"
         );
@@ -44,7 +46,7 @@ public class PauseMenu {
 
         // ✅ Exit Button (Image)
         ImageButton exitButton = createImageButton(
-            "ui/Pause/Exit/exit_normal.png",
+            "ui/Pause/Exit/exit_off.png",
             "ui/Pause/Exit/exit_hover.png",
             "ui/Pause/Exit/exit_hover.png"
         );
