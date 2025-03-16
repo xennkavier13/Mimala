@@ -1,6 +1,7 @@
 package com.oop.mimala;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,12 +11,15 @@ import com.badlogic.gdx.utils.Array;
 public class AnimationCharacter {
     private Animation<TextureRegion> walkAnimation;
     private Animation<TextureRegion> idleAnimation;
+    private Animation<TextureRegion> attackAnimation; // ✅ Attack animation
+
     private float stateTime;
     private float x, y;
     private TextureRegion currentFrame;
     private Array<Texture> textures;
     private boolean isMoving = false;
-    private boolean facingRight = true; // ✅ Track direction
+    private boolean facingRight = true;
+    private boolean isAttacking = false; // ✅ Track attack state
 
     public AnimationCharacter(float startX, float startY) {
         stateTime = 0f;
@@ -24,21 +28,30 @@ public class AnimationCharacter {
         textures = new Array<>();
 
         Array<TextureRegion> walkFrames = loadFrames(new String[]{
-            "milo_walking/milo_walking1.png",
-            "milo_walking/milo_walking2.png",
-            "milo_walking/milo_walking3.png",
-            "milo_walking/milo_walking4.png",
-            "milo_walking/milo_walking5.png",
-            "milo_walking/milo_walking6.png"
+            "Milo Reyes/milo_walking/milo_walking1.png",
+            "Milo Reyes/milo_walking/milo_walking2.png",
+            "Milo Reyes/milo_walking/milo_walking3.png",
+            "Milo Reyes/milo_walking/milo_walking4.png",
+            "Milo Reyes/milo_walking/milo_walking5.png",
+            "Milo Reyes/milo_walking/milo_walking6.png"
         });
 
         Array<TextureRegion> idleFrames = loadFrames(new String[]{
-            "milo_standing/milo_standing1.png",
-            "milo_standing/milo_standing2.png",
-            "milo_standing/milo_standing3.png",
-            "milo_standing/milo_standing4.png",
-            "milo_standing/milo_standing5.png",
-            "milo_standing/milo_standing6.png"
+            "Milo Reyes/milo_standing/milo_standing1.png",
+            "Milo Reyes/milo_standing/milo_standing2.png",
+            "Milo Reyes/milo_standing/milo_standing3.png",
+            "Milo Reyes/milo_standing/milo_standing4.png",
+            "Milo Reyes/milo_standing/milo_standing5.png",
+            "Milo Reyes/milo_standing/milo_standing6.png"
+        });
+
+        Array<TextureRegion> attackFrames = loadFrames(new String[]{
+            "Milo Reyes/milo_attack/milo_attack1.png",
+            "Milo Reyes/milo_attack/milo_attack2.png",
+            "Milo Reyes/milo_attack/milo_attack3.png",
+            "Milo Reyes/milo_attack/milo_attack4.png",
+            "Milo Reyes/milo_attack/milo_attack5.png",
+            "Milo Reyes/milo_attack/milo_attack6.png"
         });
 
         if (walkFrames.size > 0) {
@@ -46,6 +59,9 @@ public class AnimationCharacter {
         }
         if (idleFrames.size > 0) {
             idleAnimation = new Animation<>(0.2f, idleFrames, Animation.PlayMode.LOOP);
+        }
+        if (attackFrames.size > 0) {
+            attackAnimation = new Animation<>(0.05f, attackFrames, Animation.PlayMode.NORMAL); // ✅ Play once
         }
     }
 
@@ -67,10 +83,29 @@ public class AnimationCharacter {
         stateTime += delta;
         isMoving = velocityX != 0;
 
-        if (isMoving && walkAnimation != null) {
-            currentFrame = walkAnimation.getKeyFrame(stateTime);
-        } else if (!isMoving && idleAnimation != null) {
-            currentFrame = idleAnimation.getKeyFrame(stateTime);
+        // ✅ Handle attack when mouse is clicked
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            isAttacking = true;
+            stateTime = 0; // ✅ Reset animation timer
+            System.out.println("Attack triggered!"); // ✅ Debugging
+        }
+
+        if (isAttacking && attackAnimation != null) {
+            currentFrame = attackAnimation.getKeyFrame(stateTime);
+            System.out.println("Playing attack frame: " + attackAnimation.getKeyFrameIndex(stateTime));
+
+            // ✅ Stop attacking when animation finishes
+            if (attackAnimation.isAnimationFinished(stateTime)) {
+                isAttacking = false;
+                System.out.println("Attack animation finished.");
+            }
+        } else {
+            // ✅ Only play walk/idle if not attacking
+            if (isMoving && walkAnimation != null) {
+                currentFrame = walkAnimation.getKeyFrame(stateTime);
+            } else if (!isMoving && idleAnimation != null) {
+                currentFrame = idleAnimation.getKeyFrame(stateTime);
+            }
         }
 
         // ✅ Flip character when direction changes
@@ -84,9 +119,9 @@ public class AnimationCharacter {
     public void render(SpriteBatch batch) {
         if (currentFrame != null) {
             if (!facingRight && !currentFrame.isFlipX()) {
-                currentFrame.flip(true, false); // ✅ Flip left
+                currentFrame.flip(true, false);
             } else if (facingRight && currentFrame.isFlipX()) {
-                currentFrame.flip(true, false); // ✅ Flip right
+                currentFrame.flip(true, false);
             }
 
             batch.draw(currentFrame, x, y);
