@@ -12,14 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 public class PauseMenu {
     private final Stage stage;
     private boolean isPaused;
-    private BitmapFont font;
 
     public PauseMenu() {
         stage = new Stage();
         this.isPaused = false;
 
-        // ✅ Load font
-        font = new BitmapFont(Gdx.files.internal("ui/default.fnt"));
 
         // ✅ Full-screen semi-transparent overlay
         Image overlay = new Image(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/pause_overlay.png")))));
@@ -103,6 +100,5 @@ public class PauseMenu {
 
     public void dispose() {
         stage.dispose();
-        font.dispose();
     }
 }

@@ -48,23 +48,32 @@ public abstract class BaseCharacter {
     }
 
     public void update(float delta, float velocityX, boolean attack) {
-        stateTime += delta;
-        isMoving = velocityX != 0;
-        isAttacking = attack;
-
-        if (isAttacking) {
-            if (attackAnimation != null) {
-                currentFrame = attackAnimation.getKeyFrame(stateTime);
-                if (attackAnimation.isAnimationFinished(stateTime)) {
-                    isAttacking = false; // ✅ Stop attacking after the full animation
-                }
-            }
-        } else if (isMoving && walkAnimation != null) {
-            currentFrame = walkAnimation.getKeyFrame(stateTime);
-        } else if (!isMoving && idleAnimation != null) {
-            currentFrame = idleAnimation.getKeyFrame(stateTime);
+        // ✅ If attack just started, reset animation time
+        if (attack && !isAttacking) {
+            isAttacking = true;
+            stateTime = 0;  // Reset time to start attack animation from frame 1
         }
 
+        // ✅ If attacking, play attack animation until finished
+        if (isAttacking && attackAnimation != null) {
+            currentFrame = attackAnimation.getKeyFrame(stateTime);
+
+            // ✅ Stop attacking after animation completes
+            if (attackAnimation.isAnimationFinished(stateTime)) {
+                isAttacking = false;
+                stateTime = 0; // Reset for next action
+            }
+        }
+        // ✅ If not attacking, play movement or idle animation
+        else {
+            isMoving = velocityX != 0;
+
+            if (isMoving && walkAnimation != null) {
+                currentFrame = walkAnimation.getKeyFrame(stateTime);
+            } else if (!isMoving && idleAnimation != null) {
+                currentFrame = idleAnimation.getKeyFrame(stateTime);
+            }
+        }
 
         // ✅ Flip character when direction changes
         if (velocityX > 0) {
@@ -72,7 +81,11 @@ public abstract class BaseCharacter {
         } else if (velocityX < 0) {
             facingRight = false;
         }
+
+        // ✅ Update animation time
+        stateTime += delta;
     }
+
 
     public void render(SpriteBatch batch) {
         if (currentFrame != null) {
