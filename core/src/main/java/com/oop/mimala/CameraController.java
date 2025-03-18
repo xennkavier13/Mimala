@@ -1,10 +1,11 @@
 package com.oop.mimala;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 
 public class CameraController {
     private OrthographicCamera camera;
+    private final float lerpFactor = 0.1f; // Smooth movement factor
 
     public CameraController(float viewportWidth, float viewportHeight) {
         camera = new OrthographicCamera();
@@ -13,14 +14,22 @@ public class CameraController {
         camera.update();
     }
 
-    public void follow(Object target) {
-        if (target instanceof Sprite) {
-            Sprite sprite = (Sprite) target;
-            camera.position.set(sprite.getX() + sprite.getWidth() / 2f, sprite.getY() + sprite.getHeight() / 2f, 0);
-        } else if (target instanceof BaseCharacter) { // ✅ Now follows ANY character
-            BaseCharacter character = (BaseCharacter) target;
-            camera.position.set(character.getX(), character.getY(), 0);
-        }
+    public void follow(BaseCharacter character) {
+        if (character == null) return;
+
+        // Smoothly move camera to character's position (lerping)
+        camera.position.x = MathUtils.lerp(camera.position.x, character.getX(), lerpFactor);
+        camera.position.y = MathUtils.lerp(camera.position.y, character.getY(), lerpFactor);
+
+        // Ensure camera stays within bounds (adjust limits if needed)
+        float minX = camera.viewportWidth / 2f;
+        float minY = camera.viewportHeight / 2f;
+        float maxX = 1920 - minX; // Adjust according to world size
+        float maxY = 1080 - minY;
+
+        camera.position.x = MathUtils.clamp(camera.position.x, minX, maxX);
+        camera.position.y = MathUtils.clamp(camera.position.y, minY, maxY);
+
         camera.update();
     }
 

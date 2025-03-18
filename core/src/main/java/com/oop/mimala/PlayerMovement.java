@@ -2,14 +2,19 @@ package com.oop.mimala;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import java.util.*;
 
 public class PlayerMovement {
     private float x, y;
     private float speed = 200f;
     private boolean isJumping = false;
-    private float jumpHeight = 50f;
-    private float jumpSpeed = 300f;
+    private float jumpSpeed = 350f;
     private float velocityX = 0;
+    private float velocityY = 0;
+    private float gravity = -900f; // Stronger gravity for realistic movement
+    private float ground = 150f; // Default ground level
+
+
 
     public PlayerMovement(float startX, float startY) { // ✅ Initialize at character position
         this.x = startX;
@@ -30,25 +35,28 @@ public class PlayerMovement {
             velocityX = -speed;
         }
 
-        x += velocityX * delta; // ✅ Apply movement
+        x += velocityX * delta; // Apply movement
     }
 
     public void jump(float delta) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !isJumping) {
             isJumping = true;
+            velocityY = jumpSpeed; // Apply upward force
         }
 
         if (isJumping) {
-            y += jumpSpeed * delta;
-            if (y >= jumpHeight) {
-                isJumping = false;
-            }
-        } else {
-            if (y > 0) {
-                y -= jumpSpeed * delta;
-            } else {
-                y = 0;
-            }
+            velocityY += gravity * delta; // Apply gravity
+        }
+
+        y += velocityY * delta; // Apply vertical movement
+
+        // Check if player lands on the ground
+        if (y <= ground) {
+            y = ground;
+            velocityY = 0;
+            isJumping = false;
         }
     }
+
+
 }
