@@ -1,6 +1,6 @@
-package com.oop.mimala;
+package com.oop.mimala.nousagesyet;
 
-abstract class Character implements CharacterStats{
+abstract class Character implements CharacterStats {
     //protected used here for classes within the same package can access
     protected float attackDamage;
     protected float specialAttackDamage;

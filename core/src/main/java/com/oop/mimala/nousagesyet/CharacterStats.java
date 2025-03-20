@@ -1,4 +1,4 @@
-package com.oop.mimala;
+package com.oop.mimala.nousagesyet;
 
 public interface CharacterStats {
     //setters

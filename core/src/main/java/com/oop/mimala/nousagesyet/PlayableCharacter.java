@@ -1,11 +1,11 @@
-package com.oop.mimala;
+package com.oop.mimala.nousagesyet;
 
-public class EnemyCharacter extends Character{
+public class PlayableCharacter extends com.oop.mimala.nousagesyet.Character {
     private String name;
     private String specialTrait;
     private String weakness;
 
-    public EnemyCharacter(String name, float attackDamage, float specialAttackDamage, float speed, float stamina, float defense, float attackSpeed, float health, String specialTrait, String weakness) {
+    public PlayableCharacter(String name, float attackDamage, float specialAttackDamage, float speed, float stamina, float defense, float attackSpeed, float health, String specialTrait, String weakness) {
         super(attackDamage, specialAttackDamage, speed, stamina, defense, attackSpeed, health);
         this.name = name;
         this.specialTrait = specialTrait;
@@ -15,13 +15,14 @@ public class EnemyCharacter extends Character{
     //passive traits etc.
     @Override
     public void specialAbility() {
-        System.out.println(name + " unleashes a terrifying power!");
+        System.out.println(name + " uses their unique ability!");
     }
+
 
     //still optional
     @Override
     public void displayStats() {
-        System.out.println("Enemy: " + name);
+        System.out.println("Character: " + name);
         super.displayStats();
         System.out.println("Special Trait: " + specialTrait);
         System.out.println("Weakness: " + weakness);

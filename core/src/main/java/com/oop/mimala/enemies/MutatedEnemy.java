@@ -14,6 +14,7 @@ public class MutatedEnemy extends BaseCharacter {
     private float speed = 50f; // Enemy movement speed
     private float playerX; // Store player's X position
     private boolean facingRight = true;
+    private float detectionRange = 300f; // Only start chasing when the player is within 300 pixels
 
     public MutatedEnemy(float startX, float startY) {
         super(startX, startY);
@@ -48,21 +49,27 @@ public class MutatedEnemy extends BaseCharacter {
     }
 
     public void update(float delta, float playerX, boolean attack) {
-        this.playerX = playerX; // ✅ Store player's X position
-        float speed = 50f;
+        this.playerX = playerX;
         float distance = Math.abs(playerX - this.x);
 
+        if (distance > detectionRange) {
+            // If player is too far, stay idle and don't move
+            isAttacking = false;
+            super.update(delta, 0, false); // No movement
+            return;
+        }
+
+        // If player is within detection range, start chasing
         if (distance <= attackRange) {
             isAttacking = true;
         } else {
             isAttacking = false;
-
             if (playerX > this.x) {
                 this.x += speed * delta;
-                facingRight = true;  // ✅ Face right
+                facingRight = true;
             } else {
                 this.x -= speed * delta;
-                facingRight = false; // ✅ Face left
+                facingRight = false;
             }
         }
 
@@ -71,30 +78,17 @@ public class MutatedEnemy extends BaseCharacter {
 
 
 
+
     @Override
     public void render(SpriteBatch batch) {
-        TextureRegion currentFrame;
+        if (currentFrame != null) {
+            float drawX = facingRight ? x : x + currentFrame.getRegionWidth();
+            float drawWidth = facingRight ? currentFrame.getRegionWidth() : -currentFrame.getRegionWidth();
 
-        if (isAttacking) {
-            currentFrame = attackAnimation.getKeyFrame(stateTime, false); // Attack once
-            if (attackAnimation.isAnimationFinished(stateTime)) {
-                isAttacking = false; // Stop attacking after animation
-                stateTime = 0; // Reset animation time
-            }
-        }  else if (Math.abs(this.playerX - this.x) > attackRange) {
-            currentFrame = walkAnimation.getKeyFrame(stateTime, true); // Walking loop
-        } else {
-            currentFrame = idleAnimation.getKeyFrame(stateTime, true); // Idle loop
+            batch.draw(currentFrame, drawX, y, drawWidth, currentFrame.getRegionHeight());
         }
-
-        if ((!facingRight && currentFrame.isFlipX()) || (facingRight && !currentFrame.isFlipX())) {
-            currentFrame.flip(true, false);
-        }
-
-        batch.draw(currentFrame, facingRight ? x : x + currentFrame.getRegionWidth(), y,
-            facingRight ? currentFrame.getRegionWidth() : -currentFrame.getRegionWidth(),
-            currentFrame.getRegionHeight());
     }
+
 
 
     public float getAttackRange(){
