@@ -28,7 +28,7 @@ public class BackgroundStage implements Disposable {
     }
 
     public void render(SpriteBatch batch) {
-        // ✅ Remove batch.begin() and batch.end()
+        // Remove batch.begin() and batch.end()
 
         batch.draw(background, 0, -130, 1920, 1080);
         batch.draw(layer1, 0, -130, 1920, 1080);

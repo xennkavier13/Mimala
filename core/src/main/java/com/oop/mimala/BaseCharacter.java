@@ -21,14 +21,14 @@ public abstract class BaseCharacter {
     protected TextureRegion currentFrame;
     protected Array<Texture> textures;
 
-    protected float health; // ✅ Health system
+    protected float health; // Health system
     protected float maxHealth;
 
     public BaseCharacter(float startX, float startY, float maxHealth) {
         this.x = startX;
         this.y = startY;
         this.maxHealth = maxHealth;
-        this.health = maxHealth; // ✅ Start with full health
+        this.health = maxHealth; // Start with full health
         stateTime = 0f;
         textures = new Array<>();
 
@@ -92,7 +92,7 @@ public abstract class BaseCharacter {
     public float getX() { return x; }
     public float getY() { return y; }
 
-    // ✅ Health management
+    // Health management
     public void takeDamage(float amount) {
         health -= amount;
         if (health <= 0) {

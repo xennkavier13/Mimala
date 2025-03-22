@@ -16,7 +16,7 @@ public class PlayerMovement {
 
 
 
-    public PlayerMovement(float startX, float startY) { // ✅ Initialize at character position
+    public PlayerMovement(float startX, float startY) { // Initialize at character position
         this.x = startX;
         this.y = startY;
     }
@@ -57,6 +57,4 @@ public class PlayerMovement {
             isJumping = false;
         }
     }
-
-
 }

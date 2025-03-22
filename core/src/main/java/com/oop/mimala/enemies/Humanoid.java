@@ -58,12 +58,12 @@ public class Humanoid extends BaseCharacter {
             return;
         }
 
-        // ✅ Attack if close enough
+        // Attack if close enough
         if (distance <= attackRange) {
             isAttacking = true;
-            if (attackAnimation.isAnimationFinished(stateTime)) { // ✅ Damage at the end of animation
-                player.takeDamage(10); // ✅ Enemy deals 10 damage
-                System.out.println("⚠️ Player took damage! Current HP: " + player.getHealth());
+            if (attackAnimation.isAnimationFinished(stateTime)) { // Damage at the end of animation
+                player.takeDamage(5); // Enemy deals 10 damage
+                System.out.println("Player took damage! Current HP: " + player.getHealth());
             }
         } else {
             isAttacking = false;
@@ -94,7 +94,7 @@ public class Humanoid extends BaseCharacter {
 
     public void takeDamage(float amount) {
         health -= amount;
-        System.out.println("⚠️ Humanoid took " + amount + " damage! Current HP: " + health);
+        System.out.println("Humanoid took " + amount + " damage! Current HP: " + health);
     }
 
     public boolean isDead() {

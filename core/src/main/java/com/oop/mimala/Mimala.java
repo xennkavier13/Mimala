@@ -24,7 +24,7 @@ public class Mimala extends ApplicationAdapter {
     private final int WIDTH = 1920;
     private final int HEIGHT = 1080;
 
-    private Array<Humanoid> enemies; // ✅ List of enemies
+    private Array<Humanoid> enemies; // List of enemies
 
     @Override
     public void create() {
@@ -45,7 +45,7 @@ public class Mimala extends ApplicationAdapter {
 
         Gdx.input.setCursorCatched(true); // Hide cursor during gameplay
 
-        spawnEnemiesOnStage(); // ✅ Spawn enemies once at the start
+        spawnEnemiesOnStage(); // Spawn enemies once at the start
     }
 
     @Override
@@ -68,25 +68,25 @@ public class Mimala extends ApplicationAdapter {
 
         playerCharacter.move(input.getX(), input.getY());
 
-        // ✅ Player Attack - Damage Enemies When Clicking Left Mouse Button
+        // Player Attack - Damage Enemies When Clicking Left Mouse Button
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             for (int i = enemies.size - 1; i >= 0; i--) {
                 Humanoid enemy = enemies.get(i);
                 float distanceToEnemy = Math.abs(enemy.getX() - playerCharacter.getX());
 
-                if (distanceToEnemy <= 100) { // ✅ If close enough, deal damage
+                if (distanceToEnemy <= 100) { // If close enough, deal damage
                     enemy.takeDamage(20);
-                    System.out.println("✅ Enemy took damage! Current HP: " + enemy.getHealth());
+                    System.out.println("Enemy took damage! Current HP: " + enemy.getHealth());
 
                     if (enemy.isDead()) {
-                        System.out.println("💀 Enemy defeated!");
-                        enemies.removeIndex(i); // ✅ Remove enemy if dead
+                        System.out.println("Enemy defeated!");
+                        enemies.removeIndex(i); // Remove enemy if dead
                     }
                 }
             }
         }
 
-        // ✅ Update all enemies before rendering
+        // Update all enemies before rendering
         for (Humanoid enemy : enemies) {
             boolean shouldAttack = Math.abs(enemy.getX() - playerCharacter.getX()) <= enemy.getAttackRange();
             enemy.update(delta, playerCharacter.getX(), shouldAttack, playerCharacter);
@@ -106,7 +106,7 @@ public class Mimala extends ApplicationAdapter {
 
         batch.end();
 
-        // ✅ Render Health Bar (UI Layer)
+        // Render Health Bar (UI Layer)
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         healthBar.render(batch);
