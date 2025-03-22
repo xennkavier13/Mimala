@@ -2,7 +2,7 @@ package com.oop.mimala;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import java.util.*;
+import com.badlogic.gdx.math.Rectangle;
 
 public class PlayerMovement {
     private float x, y;
@@ -12,13 +12,13 @@ public class PlayerMovement {
     private float velocityX = 0;
     private float velocityY = 0;
     private float gravity = -900f; // Stronger gravity for realistic movement
-    private float ground = 150f; // Default ground level
+    private float ground; // Ground level (can be set dynamically)
+    private boolean isOnGround = false; // Flag to check if the player is on a platform
 
-
-
-    public PlayerMovement(float startX, float startY) { // ✅ Initialize at character position
+    public PlayerMovement(float startX, float startY) {
         this.x = startX;
         this.y = startY;
+        this.ground = startY; // Set ground level to the initial Y position
     }
 
     public float getX() { return x; }
@@ -39,7 +39,7 @@ public class PlayerMovement {
     }
 
     public void jump(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !isJumping) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && isOnGround) {
             isJumping = true;
             velocityY = jumpSpeed; // Apply upward force
         }
@@ -51,12 +51,22 @@ public class PlayerMovement {
         y += velocityY * delta; // Apply vertical movement
 
         // Check if player lands on the ground
-        if (y <= ground) {
+        if (y <= ground && isOnGround) {
             y = ground;
             velocityY = 0;
             isJumping = false;
         }
     }
 
-
+    /**
+     * Updates the player's ground state based on collision detection.
+     *
+     * @param isOnGround True if the player is standing on a platform, false otherwise.
+     */
+    public void setOnGround(boolean isOnGround) {
+        this.isOnGround = isOnGround;
+        if (!isOnGround) {
+            isJumping = true; // Player is falling
+        }
+    }
 }

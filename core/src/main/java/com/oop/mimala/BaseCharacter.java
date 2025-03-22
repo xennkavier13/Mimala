@@ -11,7 +11,7 @@ public abstract class BaseCharacter {
     protected Animation<TextureRegion> walkAnimation;
     protected Animation<TextureRegion> idleAnimation;
     protected Animation<TextureRegion> attackAnimation;
-
+    protected Texture texture;
     protected float stateTime;
     protected float x, y;
     protected boolean isMoving = false;
@@ -29,6 +29,19 @@ public abstract class BaseCharacter {
 
         loadAnimations();
     }
+    public float getWidth() {
+        if (texture != null) {
+            return texture.getWidth();
+        }
+        return 0; // Default value if texture is not loaded
+    }
+    public float getHeight() {
+        if (texture != null) {
+            return texture.getHeight();
+        }
+        return 0; // Default value if texture is not loaded
+    }
+
 
     // ✅ Each character must define its own animations
     protected abstract void loadAnimations();
