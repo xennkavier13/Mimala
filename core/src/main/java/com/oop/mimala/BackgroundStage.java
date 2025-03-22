@@ -28,7 +28,7 @@ public class BackgroundStage implements Disposable {
     }
 
     public void render(SpriteBatch batch) {
-        batch.begin();
+        // ✅ Remove batch.begin() and batch.end()
 
         batch.draw(background, 0, -130, 1920, 1080);
         batch.draw(layer1, 0, -130, 1920, 1080);
@@ -42,13 +42,10 @@ public class BackgroundStage implements Disposable {
         batch.draw(edgeTile,1296 ,-20, 39, 180);
 
         for (int x = 0; x < screenWidth; x += tileWidth) {
-            batch.draw(groundTile, x, -20, tileWidth, 180); // Generates tiles the length of the screenWidth
+            batch.draw(groundTile, x, -20, tileWidth, 180);
         }
-
-
-
-        batch.end();
     }
+
 
     @Override
     public void dispose() {

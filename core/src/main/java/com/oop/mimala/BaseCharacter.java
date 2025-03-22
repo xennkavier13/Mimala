@@ -21,53 +21,36 @@ public abstract class BaseCharacter {
     protected TextureRegion currentFrame;
     protected Array<Texture> textures;
 
-    public BaseCharacter(float startX, float startY) {
+    protected float health; // ✅ Health system
+    protected float maxHealth;
+
+    public BaseCharacter(float startX, float startY, float maxHealth) {
         this.x = startX;
         this.y = startY;
+        this.maxHealth = maxHealth;
+        this.health = maxHealth; // ✅ Start with full health
         stateTime = 0f;
         textures = new Array<>();
 
         loadAnimations();
     }
 
-    // ✅ Each character must define its own animations
     protected abstract void loadAnimations();
 
-    protected Array<TextureRegion> loadFrames(String[] framePaths) {
-        Array<TextureRegion> frames = new Array<>();
-        for (String path : framePaths) {
-            try {
-                Texture texture = new Texture(Gdx.files.internal(path));
-                textures.add(texture);
-                frames.add(new TextureRegion(texture));
-            } catch (Exception e) {
-                System.err.println("Error loading texture: " + path);
-            }
-        }
-        return frames;
-    }
-
     public void update(float delta, float velocityX, boolean attack) {
-        // ✅ If attack just started, reset animation time
         if (attack && !isAttacking) {
             isAttacking = true;
-            stateTime = 0;  // Reset time to start attack animation from frame 1
+            stateTime = 0;
         }
 
-        // ✅ If attacking, play attack animation until finished
         if (isAttacking && attackAnimation != null) {
             currentFrame = attackAnimation.getKeyFrame(stateTime);
-
-            // ✅ Stop attacking after animation completes
             if (attackAnimation.isAnimationFinished(stateTime)) {
                 isAttacking = false;
-                stateTime = 0; // Reset for next action
+                stateTime = 0;
             }
-        }
-        // ✅ If not attacking, play movement or idle animation
-        else {
+        } else {
             isMoving = velocityX != 0;
-
             if (isMoving && walkAnimation != null) {
                 currentFrame = walkAnimation.getKeyFrame(stateTime);
             } else if (!isMoving && idleAnimation != null) {
@@ -75,17 +58,14 @@ public abstract class BaseCharacter {
             }
         }
 
-        // ✅ Flip character when direction changes
         if (velocityX > 0) {
             facingRight = true;
         } else if (velocityX < 0) {
             facingRight = false;
         }
 
-        // ✅ Update animation time
         stateTime += delta;
     }
-
 
     public void render(SpriteBatch batch) {
         if (currentFrame != null) {
@@ -111,4 +91,20 @@ public abstract class BaseCharacter {
 
     public float getX() { return x; }
     public float getY() { return y; }
+
+    // ✅ Health management
+    public void takeDamage(float amount) {
+        health -= amount;
+        if (health <= 0) {
+            health = 0;
+        }
+    }
+
+    public boolean isDead() {
+        return health <= 0;
+    }
+
+    public float getHealth() {
+        return health;
+    }
 }

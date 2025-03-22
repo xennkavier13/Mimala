@@ -9,7 +9,7 @@ import com.oop.mimala.BaseCharacter;
 
 public class MiloCharacter extends BaseCharacter {
     public MiloCharacter(float startX, float startY) {
-        super(startX, startY);
+        super(startX, startY, 100);
     }
 
     @Override

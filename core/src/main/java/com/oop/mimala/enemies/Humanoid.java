@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.oop.mimala.BaseCharacter;
 
-public class MutatedEnemy extends BaseCharacter {
+public class Humanoid extends BaseCharacter {
     private float attackRange = 50f; // Distance at which enemy attacks
     private boolean isAttacking = false;
     private float speed = 50f; // Enemy movement speed
@@ -16,25 +16,25 @@ public class MutatedEnemy extends BaseCharacter {
     private boolean facingRight = true;
     private float detectionRange = 300f; // Only start chasing when the player is within 300 pixels
 
-    public MutatedEnemy(float startX, float startY) {
-        super(startX, startY, 20);
+    public Humanoid(float startX, float startY) {
+        super(startX, startY, 100);
     }
 
     @Override
     protected void loadAnimations() {
         Array<TextureRegion> idleFrames = new Array<>();
         for (int i = 1; i <= 8; i++) {
-            idleFrames.add(new TextureRegion(new Texture(Gdx.files.internal("MOBS&BOSS/Mutated/standing_mutant/standing_mutant" + i + ".png"))));
+            idleFrames.add(new TextureRegion(new Texture(Gdx.files.internal("MOBS&BOSS/Humanoids/standing_humanoid/standing_humanoid" + i + ".png"))));
         }
 
         Array<TextureRegion> walkFrames = new Array<>();
         for (int i = 1; i <= 8; i++) {
-            walkFrames.add(new TextureRegion(new Texture(Gdx.files.internal("MOBS&BOSS/Mutated/walking_mutant/walking_mutant" + i + ".png"))));
+            walkFrames.add(new TextureRegion(new Texture(Gdx.files.internal("MOBS&BOSS/Humanoids/walking_humanoid/walking_humanoid" + i + ".png"))));
         }
 
         Array<TextureRegion> attackFrames = new Array<>();
-        for (int i = 1; i <= 22; i++) {
-            attackFrames.add(new TextureRegion(new Texture(Gdx.files.internal("MOBS&BOSS/Mutated/attack_mutant/attack_mutant" + i + ".png"))));
+        for (int i = 1; i <= 9; i++) {
+            attackFrames.add(new TextureRegion(new Texture(Gdx.files.internal("MOBS&BOSS/Humanoids/attack_humanoid/standing_humanoid" + i + ".png"))));
         }
 
         if (walkFrames.size > 0) {
@@ -44,24 +44,27 @@ public class MutatedEnemy extends BaseCharacter {
             idleAnimation = new Animation<>(0.2f, idleFrames, Animation.PlayMode.LOOP);
         }
         if (attackFrames.size > 0) {
-            attackAnimation = new Animation<>(0.15f, attackFrames, Animation.PlayMode.NORMAL);
+            attackAnimation = new Animation<>(0.1f, attackFrames, Animation.PlayMode.NORMAL);
         }
     }
 
-    public void update(float delta, float playerX, boolean attack) {
+    public void update(float delta, float playerX, boolean attack, BaseCharacter player) {
         this.playerX = playerX;
         float distance = Math.abs(playerX - this.x);
 
         if (distance > detectionRange) {
-            // If player is too far, stay idle and don't move
             isAttacking = false;
-            super.update(delta, 0, false); // No movement
+            super.update(delta, 0, false);
             return;
         }
 
-        // If player is within detection range, start chasing
+        // ✅ Attack if close enough
         if (distance <= attackRange) {
             isAttacking = true;
+            if (attackAnimation.isAnimationFinished(stateTime)) { // ✅ Damage at the end of animation
+                player.takeDamage(10); // ✅ Enemy deals 10 damage
+                System.out.println("⚠️ Player took damage! Current HP: " + player.getHealth());
+            }
         } else {
             isAttacking = false;
             if (playerX > this.x) {
@@ -87,6 +90,15 @@ public class MutatedEnemy extends BaseCharacter {
 
             batch.draw(currentFrame, drawX, y, drawWidth, currentFrame.getRegionHeight());
         }
+    }
+
+    public void takeDamage(float amount) {
+        health -= amount;
+        System.out.println("⚠️ Humanoid took " + amount + " damage! Current HP: " + health);
+    }
+
+    public boolean isDead() {
+        return health <= 0;
     }
 
 
