@@ -19,19 +19,19 @@ public class PauseMenu {
         this.isPaused = false;
 
 
-        // ✅ Full-screen semi-transparent overlay
+        // Full-screen semi-transparent overlay
         Image overlay = new Image(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/pause_overlay.png")))));
         overlay.setColor(1,1,1,0.5f);
-        overlay.setFillParent(true); // ✅ Ensure it covers the whole screen
+        overlay.setFillParent(true); // Ensure it covers the whole screen
         stage.addActor(overlay);
 
 
-        // ✅ Table for buttons
+        // Table for buttons
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
 
-        // ✅ Resume Button (Image)
+        // Resume Button (Image)
         ImageButton resumeButton = createImageButton(
             "ui/Pause/Resume/resume_off.png",
             "ui/Pause/Resume/resume_hover.png",
@@ -44,7 +44,7 @@ public class PauseMenu {
             }
         });
 
-        // ✅ Exit Button (Image)
+        // Exit Button (Image)
         ImageButton exitButton = createImageButton(
             "ui/Pause/Exit/exit_off.png",
             "ui/Pause/Exit/exit_hover.png",
@@ -57,7 +57,7 @@ public class PauseMenu {
             }
         });
 
-        // ✅ Add buttons to table
+        // Add buttons to table
         table.add(resumeButton).pad(10).row();
         table.add(exitButton).pad(10);
     }
@@ -79,7 +79,7 @@ public class PauseMenu {
         isPaused = !isPaused;
         Gdx.input.setInputProcessor(isPaused ? stage : null);
 
-        // ✅ Show cursor when paused, hide when unpaused
+        // Show cursor when paused, hide when unpaused
         Gdx.input.setCursorCatched(!isPaused);
         Gdx.input.setCursorPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
     }
