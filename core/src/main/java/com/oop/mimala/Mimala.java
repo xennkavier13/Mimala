@@ -1,6 +1,7 @@
 package com.oop.mimala;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
@@ -103,11 +104,18 @@ public class Mimala extends ApplicationAdapter {
         batch.setProjectionMatrix(cameraController.getCamera().combined);
 
         batch.begin();
-        backgroundStage.render(batch);
+        backgroundStage.render(batch); // Renders the background first
+
+// Draw player
         playerCharacter.render(batch);
+
+// **Ensure enemies are drawn at world position**
         for (Humanoid enemy : enemies) {
+            float worldX = enemy.getX();
+            float worldY = enemy.getY();
             enemy.render(batch);
         }
+
         batch.end();
 
 
@@ -137,9 +145,11 @@ public class Mimala extends ApplicationAdapter {
     }
 
     private void spawnEnemiesOnStage() {
-        enemies.add(new Humanoid(500, 150));
-        enemies.add(new Humanoid(900, 150));
-        enemies.add(new Humanoid(1300, 150));
-        enemies.add(new Humanoid(1600, 150));
+        OrthographicCamera camera = cameraController.getCamera();
+        enemies.add(new Humanoid(500, 150, camera));
+        enemies.add(new Humanoid(900, 150, camera));
+        enemies.add(new Humanoid(1300, 150, camera));
+        enemies.add(new Humanoid(1600, 150, camera));
     }
+
 }
