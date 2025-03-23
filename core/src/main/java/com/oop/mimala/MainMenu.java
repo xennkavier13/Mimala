@@ -26,6 +26,7 @@ public class MainMenu {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setUndecorated(true);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.getContentPane().setBackground(Color.BLACK); // Ensure background stays black
 
         ImageIcon introGif = new ImageIcon("assets/MainMenuIntro.gif");
         JLabel introLabel = new JLabel(introGif) {
@@ -36,8 +37,6 @@ public class MainMenu {
                 g.drawImage(introGif.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
         };
-
-
 
         introLabel.setLayout(new BorderLayout());
 

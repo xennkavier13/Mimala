@@ -43,13 +43,13 @@ public class HealthBar {
             return;
         }
 
-        float scale = 3.0f; // ✅ Increase size (2x bigger)
+        float scale = 3.0f; // Increase size (2x bigger)
         float width = healthFrames[hpIndex].getWidth() * scale;
         float height = healthFrames[hpIndex].getHeight() * scale;
 
         //System.out.println("🔹 Drawing HealthBar: Index " + hpIndex + " at (" + BAR_X + "," + BAR_Y + "), Size: " + width + "x" + height);
 
-        batch.draw(healthFrames[hpIndex], BAR_X, BAR_Y, width, height); // ✅ Draw bigger health bar
+        batch.draw(healthFrames[hpIndex], BAR_X, BAR_Y, width, height); // Draw bigger health bar
     }
 
 

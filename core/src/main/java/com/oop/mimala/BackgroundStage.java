@@ -18,8 +18,8 @@ public class BackgroundStage implements Disposable {
         backgroundTexture = new Texture("assets/background_test.png");
         backgroundRegion = new TextureRegion(backgroundTexture);
 
-        // Initialize scrollX to align with the viewport width
-        scrollX = 0;
+        // Center the background by adjusting scrollX
+        scrollX = (viewportWidth - backgroundTexture.getWidth()) / 2f;
     }
 
     public void update(float playerVelocityX, float delta) {
@@ -30,10 +30,10 @@ public class BackgroundStage implements Disposable {
     public void render(SpriteBatch batch) {
         float textureWidth = backgroundTexture.getWidth();
 
-        //  Ensure a seamless loop by drawing the background multiple times
+        // Ensure a seamless loop by drawing the background multiple times
         batch.draw(backgroundRegion, scrollX, 0);
         batch.draw(backgroundRegion, scrollX + textureWidth, 0);
-        batch.draw(backgroundRegion, scrollX - textureWidth, 0); //  Draw on the left side too
+        batch.draw(backgroundRegion, scrollX - textureWidth, 0); // Draw on the left side too
 
         // Reset scroll position when fully out of frame
         if (scrollX <= -textureWidth) {
