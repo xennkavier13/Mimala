@@ -20,6 +20,10 @@ public class MiloCharacter extends BaseCharacter {
         idleAnimation = loadAnimation("assets/Milo/Move/Idle.png", 6, 0.2f, Animation.PlayMode.LOOP);
         walkAnimation = loadAnimation("assets/Milo/Move/Run.png", 6, 0.1f, Animation.PlayMode.LOOP);
         attackAnimation = loadAnimation("assets/Milo/Basic Attack/Basic_Attack1.png", 4, 0.15f, Animation.PlayMode.NORMAL);
+
+        attackAnimation2 = loadAnimation("assets/Milo/Basic Attack/Basic_Attack2.png", 4, 0.15f, Animation.PlayMode.NORMAL);
+        attackAnimation3 = loadAnimation("assets/Milo/Basic Attack/Basic_Attack3.png", 4, 0.15f, Animation.PlayMode.NORMAL);
+
     }
 
     private Animation<TextureRegion> loadAnimation(String filePath, int frameCount, float frameDuration, Animation.PlayMode playMode) {
@@ -45,5 +49,13 @@ public class MiloCharacter extends BaseCharacter {
 
     public void setScale(float scale) {
         this.scale = scale;
+    }
+
+    public Animation<TextureRegion> getAttackAnimation2() {
+        return attackAnimation2;
+    }
+
+    public Animation<TextureRegion> getAttackAnimation3() {
+        return attackAnimation3;
     }
 }

@@ -7,8 +7,8 @@ public class CameraController {
     private OrthographicCamera camera;
     private final float lerpFactor = 0.1f; // Smooth movement factor
     private final float zoomLerpFactor = 0.05f; // Smooth zooming factor
-    private final float minZoom = 0.7f; // Closer view
-    private final float maxZoom = 1.2f; // Further view
+    private final float minZoom = 0.3f; // Closer view
+    private final float maxZoom = 0.7f; // Further view
 
     public CameraController(float viewportWidth, float viewportHeight) {
         camera = new OrthographicCamera();

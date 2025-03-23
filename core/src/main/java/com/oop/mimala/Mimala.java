@@ -20,8 +20,11 @@ public class Mimala extends ApplicationAdapter {
     private BaseCharacter playerCharacter;
     private PauseMenu pauseMenu;
     private HealthBar healthBar;
+    private BackgroundStage backgroundStage;
+
+
     private final int WIDTH = 1920;
-    private final int HEIGHT = 1080;
+    private final int HEIGHT = 900;
 
     private Array<Humanoid> enemies; // List of enemies
 
@@ -31,7 +34,7 @@ public class Mimala extends ApplicationAdapter {
         pauseMenu = new PauseMenu();
 
 
-        playerCharacter = new MiloCharacter(100, 90); // Player's initial position
+        playerCharacter = new MiloCharacter(0, 0); // Player's initial position
         healthBar = new HealthBar((MiloCharacter) playerCharacter);
         enemies = new Array<>(); // Enemy list
 
@@ -40,6 +43,8 @@ public class Mimala extends ApplicationAdapter {
 
         viewport = new FitViewport(WIDTH, HEIGHT);
         viewport.apply();
+        backgroundStage = new BackgroundStage(WIDTH);
+
 
         Gdx.input.setCursorCatched(true); // Hide cursor during gameplay
 
@@ -60,11 +65,15 @@ public class Mimala extends ApplicationAdapter {
 
         ScreenUtils.clear(0, 0, 0, 1);
 
+
+
         input.move(delta);
         input.jump(delta);
         playerCharacter.update(delta, input.getVelocityX(), Gdx.input.isButtonJustPressed(Input.Buttons.LEFT));
 
         playerCharacter.move(input.getX(), input.getY());
+
+        backgroundStage.update(input.getVelocityX(), delta);
 
         // Player Attack - Damage Enemies When Clicking Left Mouse Button
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
@@ -94,16 +103,14 @@ public class Mimala extends ApplicationAdapter {
         batch.setProjectionMatrix(cameraController.getCamera().combined);
 
         batch.begin();
-
+        backgroundStage.render(batch);
         playerCharacter.render(batch);
-
         for (Humanoid enemy : enemies) {
             enemy.render(batch);
         }
-
         batch.end();
 
-        // Render Health Bar (UI Layer)
+
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         healthBar.render(batch);
@@ -121,7 +128,7 @@ public class Mimala extends ApplicationAdapter {
     @Override
     public void dispose() {
         healthBar.dispose();
-
+        backgroundStage.dispose();
         batch.dispose();
         pauseMenu.dispose();
         if (playerCharacter != null) {
@@ -130,9 +137,9 @@ public class Mimala extends ApplicationAdapter {
     }
 
     private void spawnEnemiesOnStage() {
-//        enemies.add(new Humanoid(500, 150));
-//        enemies.add(new Humanoid(900, 150));
-//        enemies.add(new Humanoid(1300, 150));
-//        enemies.add(new Humanoid(1600, 150));
+        enemies.add(new Humanoid(500, 150));
+        enemies.add(new Humanoid(900, 150));
+        enemies.add(new Humanoid(1300, 150));
+        enemies.add(new Humanoid(1600, 150));
     }
 }

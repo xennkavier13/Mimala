@@ -24,17 +24,17 @@ public class Humanoid extends BaseCharacter {
     protected void loadAnimations() {
         Array<TextureRegion> idleFrames = new Array<>();
         for (int i = 1; i <= 8; i++) {
-            idleFrames.add(new TextureRegion(new Texture(Gdx.files.internal("MOBS&BOSS/Humanoids/standing_humanoid/standing_humanoid" + i + ".png"))));
+            idleFrames.add(new TextureRegion(new Texture(Gdx.files.internal("assets/MOBS&BOSS/Humanoids/standing_humanoid/standing_humanoid" + i + ".png"))));
         }
 
         Array<TextureRegion> walkFrames = new Array<>();
         for (int i = 1; i <= 8; i++) {
-            walkFrames.add(new TextureRegion(new Texture(Gdx.files.internal("MOBS&BOSS/Humanoids/walking_humanoid/walking_humanoid" + i + ".png"))));
+            walkFrames.add(new TextureRegion(new Texture(Gdx.files.internal("assets/MOBS&BOSS/Humanoids/walking_humanoid/walking_humanoid" + i + ".png"))));
         }
 
         Array<TextureRegion> attackFrames = new Array<>();
         for (int i = 1; i <= 9; i++) {
-            attackFrames.add(new TextureRegion(new Texture(Gdx.files.internal("MOBS&BOSS/Humanoids/attack_humanoid/standing_humanoid" + i + ".png"))));
+            attackFrames.add(new TextureRegion(new Texture(Gdx.files.internal("assets/MOBS&BOSS/Humanoids/attack_humanoid/standing_humanoid" + i + ".png"))));
         }
 
         if (walkFrames.size > 0) {
