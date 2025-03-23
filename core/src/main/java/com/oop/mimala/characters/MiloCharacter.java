@@ -8,36 +8,42 @@ import com.badlogic.gdx.utils.Array;
 import com.oop.mimala.BaseCharacter;
 
 public class MiloCharacter extends BaseCharacter {
+    private float scale = 2.0f;
+
     public MiloCharacter(float startX, float startY) {
         super(startX, startY, 100);
+        loadAnimations();
     }
 
     @Override
     protected void loadAnimations() {
-        Array<TextureRegion> walkFrames = new Array<>();
-        for (int i = 1; i <= 6; i++) {
-            walkFrames.add(new TextureRegion(new Texture(Gdx.files.internal("Milo Reyes/milo_walking/milo_walking" + i + ".png"))));
+        idleAnimation = loadAnimation("assets/Milo/Move/Idle.png", 6, 0.2f, Animation.PlayMode.LOOP);
+        walkAnimation = loadAnimation("assets/Milo/Move/Run.png", 6, 0.1f, Animation.PlayMode.LOOP);
+        attackAnimation = loadAnimation("assets/Milo/Basic Attack/Basic_Attack1.png", 4, 0.15f, Animation.PlayMode.NORMAL);
+    }
+
+    private Animation<TextureRegion> loadAnimation(String filePath, int frameCount, float frameDuration, Animation.PlayMode playMode) {
+        Texture spriteSheet = new Texture(Gdx.files.internal(filePath));
+        int frameWidth = spriteSheet.getWidth() / frameCount;
+        int frameHeight = spriteSheet.getHeight();
+
+        TextureRegion[][] tempFrames = TextureRegion.split(spriteSheet, frameWidth, frameHeight);
+        Array<TextureRegion> animationFrames = new Array<>();
+
+        for (int i = 0; i < frameCount; i++) {
+            animationFrames.add(tempFrames[0][i]);
         }
 
-        Array<TextureRegion> idleFrames = new Array<>();
-        for (int i = 1; i <= 6; i++) {
-            idleFrames.add(new TextureRegion(new Texture(Gdx.files.internal("Milo Reyes/milo_standing/milo_standing" + i + ".png"))));
-        }
+        Animation<TextureRegion> animation = new Animation<>(frameDuration, animationFrames);
+        animation.setPlayMode(playMode);
+        return animation;
+    }
 
-        Array<TextureRegion> attackFrames = new Array<>();
-        for (int i = 1; i <= 6; i++) {
-            attackFrames.add(new TextureRegion(new Texture(Gdx.files.internal("Milo Reyes/milo_attack/milo_attack" + i + ".png"))));
-        }
+    public float getScale() {
+        return scale;
+    }
 
-
-        if (walkFrames.size > 0) {
-            walkAnimation = new Animation<>(0.1f, walkFrames, Animation.PlayMode.LOOP);
-        }
-        if (idleFrames.size > 0) {
-            idleAnimation = new Animation<>(0.2f, idleFrames, Animation.PlayMode.LOOP);
-        }
-        if (attackFrames.size > 0) {
-            attackAnimation = new Animation<>(0.05f, attackFrames, Animation.PlayMode.NORMAL);
-        }
+    public void setScale(float scale) {
+        this.scale = scale;
     }
 }

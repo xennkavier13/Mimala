@@ -19,7 +19,6 @@ public class Mimala extends ApplicationAdapter {
     private PlayerMovement input;
     private BaseCharacter playerCharacter;
     private PauseMenu pauseMenu;
-    private BackgroundStage backgroundStage;
     private HealthBar healthBar;
     private final int WIDTH = 1920;
     private final int HEIGHT = 1080;
@@ -29,7 +28,6 @@ public class Mimala extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        backgroundStage = new BackgroundStage();
         pauseMenu = new PauseMenu();
 
 
@@ -97,7 +95,6 @@ public class Mimala extends ApplicationAdapter {
 
         batch.begin();
 
-        backgroundStage.render(batch);
         playerCharacter.render(batch);
 
         for (Humanoid enemy : enemies) {
@@ -130,14 +127,12 @@ public class Mimala extends ApplicationAdapter {
         if (playerCharacter != null) {
             playerCharacter.dispose();
         }
-        backgroundStage.dispose();
-
     }
 
     private void spawnEnemiesOnStage() {
-        enemies.add(new Humanoid(500, 150));
-        enemies.add(new Humanoid(900, 150));
-        enemies.add(new Humanoid(1300, 150));
-        enemies.add(new Humanoid(1600, 150));
+//        enemies.add(new Humanoid(500, 150));
+//        enemies.add(new Humanoid(900, 150));
+//        enemies.add(new Humanoid(1300, 150));
+//        enemies.add(new Humanoid(1600, 150));
     }
 }
