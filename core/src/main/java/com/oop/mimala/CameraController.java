@@ -3,6 +3,7 @@ package com.oop.mimala;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 
+
 public class CameraController {
     private OrthographicCamera camera;
     private final float lerpFactor = 0.1f; // Smooth movement factor

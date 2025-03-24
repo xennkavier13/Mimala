@@ -26,6 +26,9 @@ public class Mimala extends ApplicationAdapter {
     private HealthBar healthBar;
     private BackgroundStage backgroundStage;
 
+    private Texture background;
+
+
     private final int WIDTH = 1920;
     private final int HEIGHT = 900;
 
@@ -53,6 +56,8 @@ public class Mimala extends ApplicationAdapter {
         backgroundStage = new BackgroundStage(WIDTH);
 
         Gdx.input.setCursorCatched(true); // Hide cursor during gameplay
+
+        background = new Texture("assets/background_test.png");
 
         // Load death screen assets
         deathOverlay = new Texture(Gdx.files.internal("ui/death_overlay.png"));
@@ -116,8 +121,13 @@ public class Mimala extends ApplicationAdapter {
         cameraController.follow(playerCharacter, input, delta);
         batch.setProjectionMatrix(cameraController.getCamera().combined);
 
+
         batch.begin();
-        backgroundStage.render(batch); // Render the background
+        batch.draw(background, 0, 0, WIDTH, HEIGHT); // 🔹 Draw Background First
+        batch.end();
+
+        batch.begin();
+        backgroundStage.render(batch, cameraController.getCamera()); // Render the background
         playerCharacter.render(batch); // Render the player
 
         // Render all enemies (keep them moving)
@@ -185,16 +195,15 @@ public class Mimala extends ApplicationAdapter {
     }
 
     private void spawnEnemiesOnStage() {
-        OrthographicCamera camera = cameraController.getCamera();
-        enemies.add(new Humanoid(500, 150, camera));
-        enemies.add(new Humanoid(900, 150, camera));
-        enemies.add(new Humanoid(1300, 150, camera));
-        enemies.add(new Humanoid(1600, 150, camera));
-        enemies.add(new Humanoid(400, 150, camera));
-        enemies.add(new Humanoid(700, 150, camera));
-        enemies.add(new Humanoid(800, 150, camera));
-        enemies.add(new Humanoid(3000, 150, camera));
-        enemies.add(new Humanoid(100, 150, camera));
-
+//        OrthographicCamera camera = cameraController.getCamera();
+//        enemies.add(new Humanoid(500, 150, camera));
+//        enemies.add(new Humanoid(900, 150, camera));
+//        enemies.add(new Humanoid(1300, 150, camera));
+//        enemies.add(new Humanoid(1600, 150, camera));
+//        enemies.add(new Humanoid(400, 150, camera));
+//        enemies.add(new Humanoid(700, 150, camera));
+//        enemies.add(new Humanoid(800, 150, camera));
+//        enemies.add(new Humanoid(3000, 150, camera));
+//        enemies.add(new Humanoid(100, 150, camera));
     }
 }

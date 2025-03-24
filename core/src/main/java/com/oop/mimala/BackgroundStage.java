@@ -1,25 +1,28 @@
 package com.oop.mimala;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.Disposable;
 
 public class BackgroundStage implements Disposable {
-    private Texture backgroundTexture;
-    private TextureRegion backgroundRegion;
-
+    private TiledMap tiledMap;
+    private OrthogonalTiledMapRenderer mapRenderer;
     private float scrollX; // Tracks horizontal scrolling
-    private final float viewportWidth; // Game screen width
+    private final float viewportWidth;
+
 
     public BackgroundStage(float viewportWidth) {
         this.viewportWidth = viewportWidth;
 
-        backgroundTexture = new Texture("assets/background_test.png");
-        backgroundRegion = new TextureRegion(backgroundTexture);
-
-        // Center the background by adjusting scrollX
-        scrollX = (viewportWidth - backgroundTexture.getWidth()) / 2f;
+        // Load the Tiled map
+        tiledMap = new TmxMapLoader().load("stage_test.tmx");
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap); // Adjust scale if needed
+        // Adjust scrolling
+        scrollX = 0;
     }
 
     public void update(float playerVelocityX, float delta) {
@@ -27,24 +30,16 @@ public class BackgroundStage implements Disposable {
         scrollX -= playerVelocityX * delta * 0.5f;
     }
 
-    public void render(SpriteBatch batch) {
-        float textureWidth = backgroundTexture.getWidth();
+    public void render(SpriteBatch batch, OrthographicCamera camera) {
+        camera.update();
 
-        // Ensure a seamless loop by drawing the background multiple times
-        batch.draw(backgroundRegion, scrollX, 0);
-        batch.draw(backgroundRegion, scrollX + textureWidth, 0);
-        batch.draw(backgroundRegion, scrollX - textureWidth, 0); // Draw on the left side too
-
-        // Reset scroll position when fully out of frame
-        if (scrollX <= -textureWidth) {
-            scrollX += textureWidth;
-        } else if (scrollX >= textureWidth) {
-            scrollX -= textureWidth;
-        }
+        mapRenderer.setView(camera);
+        mapRenderer.render();
     }
 
     @Override
     public void dispose() {
-        backgroundTexture.dispose();
+        tiledMap.dispose();
+        mapRenderer.dispose();
     }
 }

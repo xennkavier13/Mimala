@@ -10,6 +10,7 @@ dependencies {
   implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
   implementation 'org.openjfx:javafx-media:17'
   implementation 'org.openjfx:javafx-swing:17'
+  implementation "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }
