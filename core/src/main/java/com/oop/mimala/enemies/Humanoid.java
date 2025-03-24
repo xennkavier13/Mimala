@@ -13,7 +13,7 @@ import com.oop.mimala.UI.EnemyHealthBar;
 public class Humanoid extends BaseCharacter {
     private float attackRange = 50f; // Distance at which enemy attacks
     private boolean isAttacking = false;
-    private float speed = 50f; // Enemy movement speed
+    private float speed = 40f; // Enemy movement speed
     private float playerX; // Store player's X position
     private boolean facingRight = true;
     private float detectionRange = 300f; // Only start chasing when the player is within 300 pixels
@@ -24,34 +24,30 @@ public class Humanoid extends BaseCharacter {
     public Humanoid(float startX, float startY, OrthographicCamera camera) {
         super(startX, startY, 100);
         healthBar = new EnemyHealthBar(this, camera); // Attach health bar
+        loadAnimations();
     }
 
     @Override
     protected void loadAnimations() {
-        Array<TextureRegion> idleFrames = new Array<>();
-        for (int i = 1; i <= 8; i++) {
-            idleFrames.add(new TextureRegion(new Texture(Gdx.files.internal("assets/MOBS&BOSS/Humanoids/standing_humanoid/standing_humanoid" + i + ".png"))));
+        idleAnimation = loadAnimation("assets/zombie_mimala/Zombie_3/Idle.png", 6, 0.2f, Animation.PlayMode.LOOP);
+        attackAnimation = loadAnimation("assets/zombie_mimala/Zombie_3/Attack.png", 4, 0.15f, Animation.PlayMode.NORMAL);
+        walkAnimation = loadAnimation("assets/zombie_mimala/Zombie_3/Walk.png",  10, 0.15f, Animation.PlayMode.NORMAL);
+    }
+    private Animation<TextureRegion> loadAnimation(String filePath, int frameCount, float frameDuration, Animation.PlayMode playMode) {
+        Texture spriteSheet = new Texture(Gdx.files.internal(filePath));
+        int frameWidth = spriteSheet.getWidth() / frameCount;
+        int frameHeight = spriteSheet.getHeight();
+
+        TextureRegion[][] tempFrames = TextureRegion.split(spriteSheet, frameWidth, frameHeight);
+        Array<TextureRegion> animationFrames = new Array<>();
+
+        for (int i = 0; i < frameCount; i++) {
+            animationFrames.add(tempFrames[0][i]);
         }
 
-        Array<TextureRegion> walkFrames = new Array<>();
-        for (int i = 1; i <= 8; i++) {
-            walkFrames.add(new TextureRegion(new Texture(Gdx.files.internal("assets/MOBS&BOSS/Humanoids/walking_humanoid/walking_humanoid" + i + ".png"))));
-        }
-
-        Array<TextureRegion> attackFrames = new Array<>();
-        for (int i = 1; i <= 9; i++) {
-            attackFrames.add(new TextureRegion(new Texture(Gdx.files.internal("assets/MOBS&BOSS/Humanoids/attack_humanoid/standing_humanoid" + i + ".png"))));
-        }
-
-        if (walkFrames.size > 0) {
-            walkAnimation = new Animation<>(0.1f, walkFrames, Animation.PlayMode.LOOP);
-        }
-        if (idleFrames.size > 0) {
-            idleAnimation = new Animation<>(0.2f, idleFrames, Animation.PlayMode.LOOP);
-        }
-        if (attackFrames.size > 0) {
-            attackAnimation = new Animation<>(0.1f, attackFrames, Animation.PlayMode.NORMAL);
-        }
+        Animation<TextureRegion> animation = new Animation<>(frameDuration, animationFrames);
+        animation.setPlayMode(playMode);
+        return animation;
     }
 
     private boolean damageApplied = false; // Prevent multiple hits per animation

@@ -22,8 +22,8 @@ public class EnemyHealthBar {
         healthBarTexture = new Texture("greenbar.png"); // Foreground bar
         healthBarBackgroundTexture = new Texture("greenbar_bg.png"); // Background bar
 
-        this.barWidth = enemy.getWidth() * 1.5f; // 1.5x enemy width for larger bar
-        this.offsetY = enemy.getHeight() + 20f; // Higher position above enemy
+        this.barWidth = enemy.getWidth(); // 1.5x enemy width for larger bar
+        this.offsetY = enemy.getHeight() - 50f; // Higher position above enemy
     }
 
     public void render(SpriteBatch batch) {

@@ -41,7 +41,7 @@ public class Mimala extends ApplicationAdapter {
         batch = new SpriteBatch();
         pauseMenu = new PauseMenu();
 
-        playerCharacter = new MiloCharacter(0, 0); // Player's initial position
+        playerCharacter = new MiloCharacter(0, 100); // Player's initial position
         healthBar = new HealthBar((MiloCharacter) playerCharacter);
         enemies = new Array<>(); // Enemy list
 
@@ -78,6 +78,24 @@ public class Mimala extends ApplicationAdapter {
         if (playerCharacter.getHealth() <= 0) {
             isDead = true;
         }
+
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            for (int i = enemies.size - 1; i >= 0; i--) {
+                Humanoid enemy = enemies.get(i);
+                float distanceToEnemy = Math.abs(enemy.getX() - playerCharacter.getX());
+
+                if (distanceToEnemy <= 100) { // If close enough, deal damage
+                    enemy.takeDamage(7);
+                    System.out.println("Enemy took damage! Current HP: " + enemy.getHealth());
+
+                    if (enemy.isDead()) {
+                        System.out.println("Enemy defeated!");
+                        enemies.removeIndex(i); // Remove enemy if dead
+                    }
+                }
+            }
+        }
+
 
         ScreenUtils.clear(0, 0, 0, 1);
 
@@ -172,5 +190,11 @@ public class Mimala extends ApplicationAdapter {
         enemies.add(new Humanoid(900, 150, camera));
         enemies.add(new Humanoid(1300, 150, camera));
         enemies.add(new Humanoid(1600, 150, camera));
+        enemies.add(new Humanoid(400, 150, camera));
+        enemies.add(new Humanoid(700, 150, camera));
+        enemies.add(new Humanoid(800, 150, camera));
+        enemies.add(new Humanoid(3000, 150, camera));
+        enemies.add(new Humanoid(100, 150, camera));
+
     }
 }
