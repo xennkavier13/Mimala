@@ -21,10 +21,18 @@ public class MiloCharacter extends BaseCharacter {
     protected void loadAnimations() {
         idleAnimation = loadAnimation("assets/Milo/Move/Idle.png", 6, 0.15f, Animation.PlayMode.LOOP);
         walkAnimation = loadAnimation("assets/Milo/Move/Run.png", 6, 0.13f, Animation.PlayMode.LOOP);
-        deathAnimation = loadAnimation("assets/Milo/Move/Death.png", 10,0.1f, Animation.PlayMode.LOOP);
+        deathAnimation = loadAnimation("assets/Milo/Move/Death.png", 10,0.1f, Animation.PlayMode.NORMAL);
         attackAnimation = loadAnimation("assets/Milo/Basic Attack/Basic_Attack1.png", 4, 0.13f, Animation.PlayMode.NORMAL);
         attackAnimation2 = loadAnimation("assets/Milo/Basic Attack/Basic_Attack2.png", 4, 0.13f, Animation.PlayMode.NORMAL);
         attackAnimation3 = loadAnimation("assets/Milo/Basic Attack/Basic_Attack3.png", 4, 0.13f, Animation.PlayMode.NORMAL);
+        getHitAnimation = loadAnimation("assets/Milo/Move/Get Hit.png", 4, 0.13f, Animation.PlayMode.NORMAL);
+
+//        Texture deathSheet = new Texture("assets/Milo/Move/Death.png");
+//        textures.add(deathSheet);
+//        TextureRegion[] deathFrames = TextureRegion.split(deathSheet, 35, 55)[0];
+//        deathAnimation = new Animation<>(0.1f, deathFrames);
+//        deathAnimation.setPlayMode(Animation.PlayMode.NORMAL);
+
     }
 
     private Animation<TextureRegion> loadAnimation(String filePath, int frameCount, float frameDuration, Animation.PlayMode playMode) {
@@ -47,19 +55,26 @@ public class MiloCharacter extends BaseCharacter {
     public void update(float delta, boolean attack, BaseCharacter enemy) {
         stateTime += delta;
 
-        // **Death Logic: Play death animation and stop all actions**
+        // **Force Death Animation if Dead**
         if (getHealth() <= 0) {
             if (deathAnimation != null) {
+                if (stateTime == 0) { // Ensure animation resets on death
+                    stateTime = 0;
+                }
                 currentFrame = deathAnimation.getKeyFrame(stateTime, false);
+
+                // Stop movement and attacks when dead
+                isAttacking = false;
+                isMoving = false;
+
                 if (deathAnimation.isAnimationFinished(stateTime)) {
                     System.out.println("Milo is dead.");
-                    return; // Stop updating further
                 }
             }
-            return; // Prevent further actions if dead
+            return; // Stop updating anything else
         }
 
-        // Update attack cooldown timer
+        // If not dead, continue normal updates
         if (cooldownTimer > 0) {
             cooldownTimer -= delta;
         }
@@ -77,7 +92,7 @@ public class MiloCharacter extends BaseCharacter {
             if (currentAttackAnim != null) {
                 currentFrame = currentAttackAnim.getKeyFrame(stateTime);
 
-                // Check if it's the last frame of the attack animation (frame index == 3)
+                // Apply damage once
                 if (!damageDealt && currentAttackAnim.getKeyFrameIndex(stateTime) == 3) {
                     enemy.takeDamage(10);
                     damageDealt = true; // Ensure damage is applied only once per attack
@@ -87,7 +102,7 @@ public class MiloCharacter extends BaseCharacter {
                 // Reset attack state when animation ends
                 if (currentAttackAnim.isAnimationFinished(stateTime)) {
                     isAttacking = false;
-                    cooldownTimer = attackCooldown; // Start cooldown after attack finishes
+                    cooldownTimer = attackCooldown;
                 }
             }
         } else {
@@ -96,6 +111,7 @@ public class MiloCharacter extends BaseCharacter {
             }
         }
     }
+
 
     private Animation<TextureRegion> getCurrentAttackAnimation() {
         switch (attackCombo) {

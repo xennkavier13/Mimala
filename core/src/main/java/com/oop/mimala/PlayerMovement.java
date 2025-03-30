@@ -14,8 +14,6 @@ public class PlayerMovement {
     private float gravity = -900f; // Stronger gravity for realistic movement
     private float ground = 150f; // Default ground level
 
-
-
     public PlayerMovement(float startX, float startY) { // Initialize at character position
         this.x = startX;
         this.y = startY;

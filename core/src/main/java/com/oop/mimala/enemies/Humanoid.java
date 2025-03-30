@@ -84,7 +84,7 @@ public class Humanoid extends BaseCharacter {
 
                 // **Apply damage at the last frame, but only if player is still close**
                 float animationProgress = stateTime / attackAnimation.getAnimationDuration();
-                if (!damageApplied && animationProgress >= 0.75f && distance <= attackRange) {
+                if (!damageApplied && animationProgress >= 0.50f && distance <= attackRange) {
                     player.takeDamage(5);
                     damageApplied = true; // Prevent multiple hits per attack
                     System.out.println("Player took damage! Current HP: " + player.getHealth());

@@ -75,27 +75,37 @@ public class Mimala extends ApplicationAdapter {
             isDead = true;
         }
 
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-            for (int i = enemies.size - 1; i >= 0; i--) {
-                Humanoid enemy = enemies.get(i);
-                float distanceToEnemy = Math.abs(enemy.getX() - playerCharacter.getX());
+        // Check if player is dead and death animation has completed
+        if (playerCharacter.isDead()) {
+            if (playerCharacter.isDeathAnimationComplete()) {
+                isDead = true;
+            }
+        } else {
+            // Only process input and attacks if player is alive
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                for (int i = enemies.size - 1; i >= 0; i--) {
+                    Humanoid enemy = enemies.get(i);
+                    float distanceToEnemy = Math.abs(enemy.getX() - playerCharacter.getX());
 
-                if (distanceToEnemy <= 100) {
-                    enemy.takeDamage(7);
-                    System.out.println("Enemy took damage! Current HP: " + enemy.getHealth());
+                    if (distanceToEnemy <= 100) {
+                        enemy.takeDamage(7);
+                        System.out.println("Enemy took damage! Current HP: " + enemy.getHealth());
 
-                    if (enemy.isDead()) {
-                        System.out.println("Enemy defeated!");
-                        enemies.removeIndex(i);
+                        if (enemy.isDead()) {
+                            System.out.println("Enemy defeated!");
+                            enemies.removeIndex(i);
+                        }
                     }
                 }
             }
+
+            input.move(delta);
+            input.jump(delta);
         }
 
         ScreenUtils.clear(0, 0, 0, 1);
 
-        input.move(delta);
-        input.jump(delta);
+
         playerCharacter.update(delta, input.getVelocityX(), Gdx.input.isButtonJustPressed(Input.Buttons.LEFT));
 
         playerCharacter.move(input.getX(), input.getY());

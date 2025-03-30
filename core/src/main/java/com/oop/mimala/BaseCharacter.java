@@ -14,6 +14,7 @@ public abstract class BaseCharacter {
     protected Animation<TextureRegion> attackAnimation2;
     protected Animation<TextureRegion> attackAnimation3;
     protected Animation<TextureRegion> deathAnimation;
+    protected Animation<TextureRegion> getHitAnimation;
 
     protected float stateTime;
     protected float x, y;
@@ -27,6 +28,12 @@ public abstract class BaseCharacter {
 
     protected float health; // Health system
     protected float maxHealth;
+
+    protected boolean isDying = false;
+    protected boolean deathAnimationPlayed = false;
+
+    protected boolean isGettingHit = false;
+
 
     public BaseCharacter(float startX, float startY, float maxHealth) {
         this.x = startX;
@@ -44,10 +51,34 @@ public abstract class BaseCharacter {
     public void update(float delta, float velocityX, boolean attack) {
         stateTime += delta; // Always update state time
 
-        if (attack && !isAttacking) {
+        if (isDead()) {
+            if (!isDying) {
+                isDying = true;
+                stateTime = 0; // Reset animation timer for death animation
+            }
+            if (deathAnimation != null && !deathAnimationPlayed) {
+                currentFrame = deathAnimation.getKeyFrame(stateTime);
+                if (deathAnimation.isAnimationFinished(stateTime)) {
+                    deathAnimationPlayed = true;
+                }
+            }
+            return; // Don't process other animations if dead
+        }
+        // **Getting Hit Animation**
+        if (isGettingHit && getHitAnimation != null) {
+            currentFrame = getHitAnimation.getKeyFrame(stateTime, false);
+
+            if (getHitAnimation.isAnimationFinished(stateTime)) {
+                isGettingHit = false; // Stop getting hit after animation ends
+            }
+            return; // Stop further updates when hit animation is playing
+        }
+
+        // **Attack Animation**
+        if (attack && !isAttacking && !isGettingHit) { // Ensure attack doesn't start if getting hit
             isAttacking = true;
             stateTime = 0;
-            attackCombo = (attackCombo + 1) % 3; // Cycle through attack animations
+            attackCombo = (attackCombo + 1) % 3;
         }
 
         if (isAttacking) {
@@ -98,6 +129,9 @@ public abstract class BaseCharacter {
         }
     }
 
+    public boolean isDeathAnimationComplete() {
+        return deathAnimationPlayed;
+    }
 
     public void render(SpriteBatch batch) {
         if (currentFrame != null) {
@@ -117,6 +151,7 @@ public abstract class BaseCharacter {
     }
 
     public void move(float dx, float dy) {
+        if(isDead()) return;
         this.x = dx;
         this.y = dy;
     }
@@ -129,6 +164,10 @@ public abstract class BaseCharacter {
         health -= amount;
         if (health <= 0) {
             health = 0;
+        } else {
+            isGettingHit = true; // Play get hit animation
+            stateTime = 0; // Reset animation timer
+            isAttacking = false; // Stop attack if getting hit
         }
     }
 
@@ -139,4 +178,6 @@ public abstract class BaseCharacter {
     public float getHealth() {
         return health;
     }
+
+
 }

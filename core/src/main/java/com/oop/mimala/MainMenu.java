@@ -186,10 +186,6 @@ public class MainMenu {
             musicClip = AudioSystem.getClip();
             musicClip.open(audioStream);
 
-            FloatControl gainControl = (FloatControl) musicClip.getControl(FloatControl.Type.MASTER_GAIN);
-
-            float volumeReduction = -5.0f; // Reduce volume by 10 decibels (adjust as needed)
-            gainControl.setValue(volumeReduction);
 
             musicClip.loop(Clip.LOOP_CONTINUOUSLY);
             musicClip.start();
