@@ -10,7 +10,7 @@ public class PlayerMovement {
     private boolean isJumping = false;
     private int jumpCount = 0;
     private final int maxJumps = 2;
-    private float jumpSpeed = 350f;
+    private float jumpSpeed = 400f;
     private float velocityX = 0;
     private float velocityY = 0;
     private float gravity = -900f;

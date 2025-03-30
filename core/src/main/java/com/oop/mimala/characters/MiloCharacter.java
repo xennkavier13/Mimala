@@ -31,9 +31,6 @@ public class MiloCharacter extends BaseCharacter {
         attackAnimation3 = loadAnimation("assets/Milo/Basic Attack/Basic_Attack3.png", 4, 0.13f, Animation.PlayMode.NORMAL);
         getHitAnimation = loadAnimation("assets/Milo/Move/Get Hit.png", 4, 0.13f, Animation.PlayMode.NORMAL);
         dashAnimation = loadAnimation("assets/Milo/Skills/1stSkill_Dash.png", 4, 0.13f, Animation.PlayMode.NORMAL);
-
-//
-
     }
 
     private Animation<TextureRegion> loadAnimation(String filePath, int frameCount, float frameDuration, Animation.PlayMode playMode) {

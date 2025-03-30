@@ -8,14 +8,12 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Disposable;
 
 public class BackgroundStage implements Disposable {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
     private OrthographicCamera camera;
-    private ShapeRenderer shapeRenderer;
 
     private final int viewportWidth;
     private final int viewportHeight;
@@ -29,48 +27,25 @@ public class BackgroundStage implements Disposable {
 
         tiledMap = new TmxMapLoader().load("stage_test.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-        shapeRenderer = new ShapeRenderer();
 
         // Get map dimensions
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         mapWidth = layer.getWidth() * layer.getTileWidth();
         mapHeight = layer.getHeight() * layer.getTileHeight();
 
-        // Setup camera
+        // Setup camera to fit the whole map
         camera = new OrthographicCamera();
         camera.setToOrtho(false, viewportWidth, viewportHeight);
-
-        // Center the map
-        centerMap();
-    }
-
-    private void centerMap() {
-        float centerX = mapWidth / 2f;
-        float centerY = mapHeight / 2.25f; // Centering based on actual map height
-
-        camera.position.set(centerX, centerY, 0);
+        camera.position.set(mapWidth / 2, mapHeight / 1.6f, 0);
         camera.update();
     }
 
     public void update(float delta) {
-        // No movement, camera is fixed
+        // No movement, camera is fixed, so no update logic needed here
     }
 
     public void render(SpriteBatch batch) {
-        // Step 1: Render black background for black bars
-        shapeRenderer.begin(ShapeType.Filled);
-        shapeRenderer.setColor(0, 0, 0, 1); // Black color
-
-        // If the map is smaller than the viewport, draw black bars
-        if (mapHeight < viewportHeight) {
-            float barSize = (viewportHeight - mapHeight) / 1.3f;
-            shapeRenderer.rect(0, 0, viewportWidth, barSize); // Bottom black bar
-            shapeRenderer.rect(0, viewportHeight - barSize, viewportWidth, barSize); // Top black bar
-        }
-
-        shapeRenderer.end();
-
-        // Step 2: Render the centered map
+        // Step 1: Render the map centered on screen
         mapRenderer.setView(camera);
         mapRenderer.render();
     }
@@ -79,6 +54,5 @@ public class BackgroundStage implements Disposable {
     public void dispose() {
         tiledMap.dispose();
         mapRenderer.dispose();
-        shapeRenderer.dispose();
     }
 }

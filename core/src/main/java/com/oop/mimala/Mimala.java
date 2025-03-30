@@ -54,7 +54,7 @@ public class Mimala extends ApplicationAdapter {
 
         Gdx.input.setCursorCatched(true);
 
-        background = new Texture("assets/background_test.png");
+        background = new Texture("assets/BackgroundMap/GraveyardMap.png");
 
         spawnEnemiesOnStage();
     }
