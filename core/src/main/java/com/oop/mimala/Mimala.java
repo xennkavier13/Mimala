@@ -1,6 +1,7 @@
 package com.oop.mimala;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.oop.mimala.UI.HealthBar;
 import com.oop.mimala.characters.MiloCharacter;
 import com.oop.mimala.enemies.Humanoid;
+import java.util.Random;
 
 public class Mimala extends ApplicationAdapter {
     private SpriteBatch batch;
@@ -149,5 +151,23 @@ public class Mimala extends ApplicationAdapter {
     }
 
     private void spawnEnemiesOnStage() {
+        Random random = new Random();
+        int enemyCount = 5; // Adjust the number of enemies you want
+
+        for (int i = 0; i < enemyCount; i++) {
+            // Generate random positions
+            float spawnX = random.nextFloat() * (WIDTH - 100) + 50; // Random X within screen width
+            float spawnY = 150; // Random Y within screen height
+
+            // Ensure enemies don't spawn too close to the player
+            while (Math.abs(spawnX - playerCharacter.getX()) < 200) {
+                spawnX = random.nextFloat() * (WIDTH - 100) + 50;
+            }
+
+            // Create and add enemy to the array
+            OrthographicCamera camera = null;
+            Humanoid enemy = new Humanoid(spawnX, spawnY, camera);
+            enemies.add(enemy);
+        }
     }
 }

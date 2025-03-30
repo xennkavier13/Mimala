@@ -13,6 +13,7 @@ public abstract class BaseCharacter {
     protected Animation<TextureRegion> attackAnimation;
     protected Animation<TextureRegion> attackAnimation2;
     protected Animation<TextureRegion> attackAnimation3;
+    protected Animation<TextureRegion> deathAnimation;
 
     protected float stateTime;
     protected float x, y;
@@ -50,14 +51,12 @@ public abstract class BaseCharacter {
         }
 
         if (isAttacking) {
-            // Select appropriate attack animation
             switch (attackCombo) {
                 case 0:
                     if (attackAnimation != null) {
                         currentFrame = attackAnimation.getKeyFrame(stateTime);
                         if (attackAnimation.isAnimationFinished(stateTime)) {
-                            isAttacking = false;
-                            stateTime = 0; // Reset for smooth transition
+                            isAttacking = false;  // Only allow new attacks once this one finishes
                         }
                     }
                     break;
@@ -66,7 +65,6 @@ public abstract class BaseCharacter {
                         currentFrame = attackAnimation2.getKeyFrame(stateTime);
                         if (attackAnimation2.isAnimationFinished(stateTime)) {
                             isAttacking = false;
-                            stateTime = 0;
                         }
                     }
                     break;
@@ -75,7 +73,6 @@ public abstract class BaseCharacter {
                         currentFrame = attackAnimation3.getKeyFrame(stateTime);
                         if (attackAnimation3.isAnimationFinished(stateTime)) {
                             isAttacking = false;
-                            stateTime = 0;
                         }
                     }
                     break;
@@ -83,19 +80,17 @@ public abstract class BaseCharacter {
         } else {
             isMoving = velocityX != 0;
 
-            // Handle movement animation
             if (isMoving) {
                 if (walkAnimation != null) {
-                    currentFrame = walkAnimation.getKeyFrame(stateTime, true); // Loop walk animation
+                    currentFrame = walkAnimation.getKeyFrame(stateTime, true);
                 }
             } else {
                 if (idleAnimation != null) {
-                    currentFrame = idleAnimation.getKeyFrame(stateTime, true); // Loop idle animation
+                    currentFrame = idleAnimation.getKeyFrame(stateTime, true);
                 }
             }
         }
 
-        // Ensure correct facing direction
         if (velocityX > 0) {
             facingRight = true;
         } else if (velocityX < 0) {

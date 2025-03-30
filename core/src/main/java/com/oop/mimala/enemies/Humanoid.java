@@ -30,7 +30,7 @@ public class Humanoid extends BaseCharacter {
     @Override
     protected void loadAnimations() {
         idleAnimation = loadAnimation("assets/zombie_mimala/Zombie_3/Idle.png", 6, 0.2f, Animation.PlayMode.LOOP);
-        attackAnimation = loadAnimation("assets/zombie_mimala/Zombie_3/Attack.png", 4, 0.15f, Animation.PlayMode.NORMAL);
+        attackAnimation = loadAnimation("assets/zombie_mimala/Zombie_3/Attack.png", 4, 0.13f, Animation.PlayMode.NORMAL);
         walkAnimation = loadAnimation("assets/zombie_mimala/Zombie_3/Walk.png",  10, 0.15f, Animation.PlayMode.NORMAL);
     }
     private Animation<TextureRegion> loadAnimation(String filePath, int frameCount, float frameDuration, Animation.PlayMode playMode) {
@@ -82,9 +82,9 @@ public class Humanoid extends BaseCharacter {
             if (isAttacking && attackAnimation != null) {
                 currentFrame = attackAnimation.getKeyFrame(stateTime, false);
 
-                // **Apply damage at a specific frame**
+                // **Apply damage at the last frame, but only if player is still close**
                 float animationProgress = stateTime / attackAnimation.getAnimationDuration();
-                if (!damageApplied && animationProgress >= 0.5f) { // Example: Apply damage at 50% of animation
+                if (!damageApplied && animationProgress >= 0.75f && distance <= attackRange) {
                     player.takeDamage(5);
                     damageApplied = true; // Prevent multiple hits per attack
                     System.out.println("Player took damage! Current HP: " + player.getHealth());
@@ -115,9 +115,6 @@ public class Humanoid extends BaseCharacter {
 
         super.update(delta, isAttacking ? 0 : speed, isAttacking);
     }
-
-
-
 
     @Override
     public void render(SpriteBatch batch) {
