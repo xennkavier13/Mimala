@@ -1,7 +1,5 @@
 package com.oop.mimala;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -11,29 +9,27 @@ import com.badlogic.gdx.utils.Disposable;
 public class BackgroundStage implements Disposable {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
-    private float scrollX; // Tracks horizontal scrolling
-    private final float viewportWidth;
+    private final int viewportWidth;
+    private final int viewportHeight;
 
-
-    public BackgroundStage(float viewportWidth) {
+    public BackgroundStage(int viewportWidth, int viewportHeight) {
         this.viewportWidth = viewportWidth;
+        this.viewportHeight = viewportHeight;
 
-        // Load the Tiled map
         tiledMap = new TmxMapLoader().load("stage_test.tmx");
-        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap); // Adjust scale if needed
-        // Adjust scrolling
-        scrollX = 0;
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
     }
 
     public void update(float playerVelocityX, float delta) {
-        // Move the background based on the player's movement speed
-        scrollX -= playerVelocityX * delta * 0.5f;
+        // No scrolling, so no update needed
     }
 
-    public void render(SpriteBatch batch, OrthographicCamera camera) {
-        camera.update();
+    public void render(SpriteBatch batch) {
+        // Set the SpriteBatch projection matrix to match the viewport
+        batch.getProjectionMatrix().setToOrtho2D(0, 0, viewportWidth, viewportHeight);
 
-        mapRenderer.setView(camera);
+        // Render the map at the fixed position (0, 0)
+        mapRenderer.setView(batch.getProjectionMatrix(), 0, 0, viewportWidth, viewportHeight);
         mapRenderer.render();
     }
 

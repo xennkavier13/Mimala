@@ -8,7 +8,7 @@ public class PlayerMovement {
     private float x, y;
     private float speed = 200f;
     private boolean isJumping = false;
-    private float jumpSpeed = 350f;
+    private float jumpSpeed = 400f;
     private float velocityX = 0;
     private float velocityY = 0;
     private float gravity = -900f; // Stronger gravity for realistic movement

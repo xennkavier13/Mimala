@@ -1,12 +1,8 @@
 package com.oop.mimala;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -19,53 +15,46 @@ public class Mimala extends ApplicationAdapter {
     private SpriteBatch batch;
     private Viewport viewport;
 
-    private CameraController cameraController;
     private PlayerMovement input;
     private BaseCharacter playerCharacter;
     private PauseMenu pauseMenu;
     private HealthBar healthBar;
     private BackgroundStage backgroundStage;
+    private DeathScreen deathScreen;
 
     private Texture background;
 
+    private int WIDTH;
+    private int HEIGHT;
 
-    private final int WIDTH = 1920;
-    private final int HEIGHT = 900;
+    private Array<Humanoid> enemies;
 
-    private Array<Humanoid> enemies; // List of enemies
-
-    private Texture deathOverlay;
-    private BitmapFont deathFont;
-    private GlyphLayout layout;
     private boolean isDead = false;
 
     @Override
     public void create() {
+        WIDTH = Gdx.graphics.getWidth();
+        HEIGHT = Gdx.graphics.getHeight();
+
         batch = new SpriteBatch();
         pauseMenu = new PauseMenu();
+        deathScreen = new DeathScreen(WIDTH, HEIGHT);
 
-        playerCharacter = new MiloCharacter(0, 100); // Player's initial position
+        playerCharacter = new MiloCharacter(0, 100);
         healthBar = new HealthBar((MiloCharacter) playerCharacter);
-        enemies = new Array<>(); // Enemy list
+        enemies = new Array<>();
 
         input = new PlayerMovement(playerCharacter.getX(), playerCharacter.getY());
-        cameraController = new CameraController(WIDTH, HEIGHT);
 
         viewport = new FitViewport(WIDTH, HEIGHT);
         viewport.apply();
-        backgroundStage = new BackgroundStage(WIDTH);
+        backgroundStage = new BackgroundStage(WIDTH, HEIGHT);
 
-        Gdx.input.setCursorCatched(true); // Hide cursor during gameplay
+        Gdx.input.setCursorCatched(true);
 
         background = new Texture("assets/background_test.png");
 
-        // Load death screen assets
-        deathOverlay = new Texture(Gdx.files.internal("ui/death_overlay.png"));
-        deathFont = new BitmapFont(Gdx.files.internal("ui/TrojanPro.fnt"));
-        layout = new GlyphLayout();
-        deathFont.getData().setScale(4);
-
-        spawnEnemiesOnStage(); // Spawn enemies once at the start
+        spawnEnemiesOnStage();
     }
 
     @Override
@@ -89,22 +78,20 @@ public class Mimala extends ApplicationAdapter {
                 Humanoid enemy = enemies.get(i);
                 float distanceToEnemy = Math.abs(enemy.getX() - playerCharacter.getX());
 
-                if (distanceToEnemy <= 100) { // If close enough, deal damage
+                if (distanceToEnemy <= 100) {
                     enemy.takeDamage(7);
                     System.out.println("Enemy took damage! Current HP: " + enemy.getHealth());
 
                     if (enemy.isDead()) {
                         System.out.println("Enemy defeated!");
-                        enemies.removeIndex(i); // Remove enemy if dead
+                        enemies.removeIndex(i);
                     }
                 }
             }
         }
 
-
         ScreenUtils.clear(0, 0, 0, 1);
 
-        // Continue updating the game world even if the player is dead
         input.move(delta);
         input.jump(delta);
         playerCharacter.update(delta, input.getVelocityX(), Gdx.input.isButtonJustPressed(Input.Buttons.LEFT));
@@ -112,67 +99,35 @@ public class Mimala extends ApplicationAdapter {
         playerCharacter.move(input.getX(), input.getY());
         backgroundStage.update(input.getVelocityX(), delta);
 
-        // Update enemies (mobs keep moving)
         for (Humanoid enemy : enemies) {
             boolean shouldAttack = Math.abs(enemy.getX() - playerCharacter.getX()) <= enemy.getAttackRange();
             enemy.update(delta, playerCharacter.getX(), shouldAttack, playerCharacter);
         }
 
-        cameraController.follow(playerCharacter, input, delta);
-        batch.setProjectionMatrix(cameraController.getCamera().combined);
-
+        batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();
-        batch.draw(background, 0, 0, WIDTH, HEIGHT); // 🔹 Draw Background First
+        batch.draw(background, 0, 0, WIDTH, HEIGHT);
         batch.end();
 
         batch.begin();
-        backgroundStage.render(batch, cameraController.getCamera()); // Render the background
-        playerCharacter.render(batch); // Render the player
+        backgroundStage.render(batch);
+        playerCharacter.render(batch);
 
-        // Render all enemies (keep them moving)
         for (Humanoid enemy : enemies) {
             enemy.render(batch);
         }
         batch.end();
 
-        // Render UI (health bar, etc.)
-        batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         healthBar.render(batch);
         batch.end();
 
-        // Show death screen without stopping the world
         if (isDead) {
-            renderDeathScreen();
-        }
-    }
-
-    private void renderDeathScreen() {
-        batch.begin();
-
-        // Black-and-white translucent overlay (still see-through)
-        batch.setColor(1, 1, 1, 0.70f);
-        batch.draw(deathOverlay, 0, 0, WIDTH, HEIGHT);
-        batch.setColor(1, 1, 1, 1);
-
-        // "YOU DIED" message
-        deathFont.setColor(1, 0, 0, 1);
-        deathFont.getData().setScale(4);
-        layout.setText(deathFont, "YOU DIED");
-        deathFont.draw(batch, "YOU DIED", (WIDTH - layout.width) / 2f, HEIGHT / 2f + 100);
-
-        // Click anywhere to exit (for now)
-        deathFont.getData().setScale(1f);
-        deathFont.setColor(1, 1, 1, 1);
-        layout.setText(deathFont, "Click anywhere to exit");
-        deathFont.draw(batch, "Click anywhere to exit", (WIDTH - layout.width) / 2f, HEIGHT / 2f - 50);
-
-        batch.end();
-
-        // Exit the game on touch
-        if (Gdx.input.isTouched()) {
-            Gdx.app.exit();
+            deathScreen.render(batch);
+            if (deathScreen.isExit()) {
+                Gdx.app.exit();
+            }
         }
     }
 
@@ -190,20 +145,9 @@ public class Mimala extends ApplicationAdapter {
         if (playerCharacter != null) {
             playerCharacter.dispose();
         }
-        deathOverlay.dispose();
-        deathFont.dispose();
+        deathScreen.dispose();
     }
 
     private void spawnEnemiesOnStage() {
-//        OrthographicCamera camera = cameraController.getCamera();
-//        enemies.add(new Humanoid(500, 150, camera));
-//        enemies.add(new Humanoid(900, 150, camera));
-//        enemies.add(new Humanoid(1300, 150, camera));
-//        enemies.add(new Humanoid(1600, 150, camera));
-//        enemies.add(new Humanoid(400, 150, camera));
-//        enemies.add(new Humanoid(700, 150, camera));
-//        enemies.add(new Humanoid(800, 150, camera));
-//        enemies.add(new Humanoid(3000, 150, camera));
-//        enemies.add(new Humanoid(100, 150, camera));
     }
 }

@@ -8,12 +8,16 @@ import com.oop.mimala.characters.MiloCharacter;
 public class HealthBar {
     private Texture[] healthFrames;
     private MiloCharacter player;
+    private int screenWidth;
+    private int screenHeight;
 
-    private final float BAR_X = 20;
-    private final float BAR_Y = 700;
+    private final float BAR_X = 0;
+    private final float BAR_Y = 900; // Changed to top-left corner
 
     public HealthBar(MiloCharacter player) {
         this.player = player;
+        this.screenWidth = Gdx.graphics.getWidth();
+        this.screenHeight = Gdx.graphics.getHeight();
         healthFrames = new Texture[19];
 
         for (int i = 0; i < 19; i++) {
@@ -43,17 +47,12 @@ public class HealthBar {
             return;
         }
 
-        float scale = 3.0f; // Increase size (2x bigger)
+        float scale = 3.0f;
         float width = healthFrames[hpIndex].getWidth() * scale;
         float height = healthFrames[hpIndex].getHeight() * scale;
 
-        //System.out.println("🔹 Drawing HealthBar: Index " + hpIndex + " at (" + BAR_X + "," + BAR_Y + "), Size: " + width + "x" + height);
-
-        batch.draw(healthFrames[hpIndex], BAR_X, BAR_Y, width, height); // Draw bigger health bar
+        batch.draw(healthFrames[hpIndex], BAR_X, BAR_Y, width, height);
     }
-
-
-
 
     public void dispose() {
         for (Texture texture : healthFrames) {
