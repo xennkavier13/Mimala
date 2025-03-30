@@ -33,7 +33,7 @@ public abstract class BaseCharacter {
     protected boolean deathAnimationPlayed = false;
 
     protected boolean isGettingHit = false;
-
+    protected boolean isInvincible = false; // Add invincibility flag
 
     public BaseCharacter(float startX, float startY, float maxHealth) {
         this.x = startX;
@@ -160,15 +160,21 @@ public abstract class BaseCharacter {
     public float getY() { return y; }
 
     // Health management
-    public void takeDamage(float amount) {
-        health -= amount;
-        if (health <= 0) {
-            health = 0;
+    public void takeDamage(int damage) {
+        if (!isInvincible) { // Only take damage if not invincible
+            health -= damage;
+            System.out.println("Character took damage: " + damage + ", Health: " + health);
         } else {
-            isGettingHit = true; // Play get hit animation
-            stateTime = 0; // Reset animation timer
-            isAttacking = false; // Stop attack if getting hit
+            System.out.println("Character is invincible and took no damage!");
         }
+    }
+
+    public void setInvincible(boolean invincible) {
+        this.isInvincible = invincible;
+    }
+
+    public boolean isInvincible() {
+        return isInvincible;
     }
 
     public boolean isDead() {

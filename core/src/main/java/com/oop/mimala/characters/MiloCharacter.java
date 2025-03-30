@@ -11,6 +11,10 @@ public class MiloCharacter extends BaseCharacter {
     private float attackCooldown = 0.5f; // Cooldown duration in seconds
     private float cooldownTimer = 0; // Timer to track attack cooldown
     private boolean damageDealt = false; // Ensures damage is applied only once per attack
+    private Animation<TextureRegion> dashAnimation;
+    private boolean isDashing = false;
+    private float dashTimer = 0;
+    private float dashDuration = 0.2f; // Duration of the dash
 
     public MiloCharacter(float startX, float startY) {
         super(startX, startY, 100);
@@ -26,12 +30,9 @@ public class MiloCharacter extends BaseCharacter {
         attackAnimation2 = loadAnimation("assets/Milo/Basic Attack/Basic_Attack2.png", 4, 0.13f, Animation.PlayMode.NORMAL);
         attackAnimation3 = loadAnimation("assets/Milo/Basic Attack/Basic_Attack3.png", 4, 0.13f, Animation.PlayMode.NORMAL);
         getHitAnimation = loadAnimation("assets/Milo/Move/Get Hit.png", 4, 0.13f, Animation.PlayMode.NORMAL);
+        dashAnimation = loadAnimation("assets/Milo/Skills/1stSkill_Dash.png", 4, 0.13f, Animation.PlayMode.NORMAL);
 
-//        Texture deathSheet = new Texture("assets/Milo/Move/Death.png");
-//        textures.add(deathSheet);
-//        TextureRegion[] deathFrames = TextureRegion.split(deathSheet, 35, 55)[0];
-//        deathAnimation = new Animation<>(0.1f, deathFrames);
-//        deathAnimation.setPlayMode(Animation.PlayMode.NORMAL);
+//
 
     }
 
@@ -52,18 +53,13 @@ public class MiloCharacter extends BaseCharacter {
         return animation;
     }
 
-    public void update(float delta, boolean attack, BaseCharacter enemy) {
+    public void update(float delta, boolean attack, boolean isDashing, BaseCharacter enemy) {
         stateTime += delta;
 
         // **Force Death Animation if Dead**
         if (getHealth() <= 0) {
             if (deathAnimation != null) {
-                if (stateTime == 0) { // Ensure animation resets on death
-                    stateTime = 0;
-                }
                 currentFrame = deathAnimation.getKeyFrame(stateTime, false);
-
-                // Stop movement and attacks when dead
                 isAttacking = false;
                 isMoving = false;
 
@@ -74,12 +70,30 @@ public class MiloCharacter extends BaseCharacter {
             return; // Stop updating anything else
         }
 
-        // If not dead, continue normal updates
+        // **Dashing Logic - Process First**
+        if (isDashing) {
+            this.isDashing = true;  // Ensure dashing state is set
+            dashTimer = dashDuration;
+            stateTime = 0; // Reset animation time
+        }
+
+        if (this.isDashing) {
+            currentFrame = dashAnimation.getKeyFrame(stateTime, false);
+
+            if (dashTimer > 0) {
+                dashTimer -= delta;
+            } else {
+                this.isDashing = false; // Stop dashing after duration
+            }
+            return; // Skip attack and movement updates during dash
+        }
+
+        // If not dead or dashing, continue normal updates
         if (cooldownTimer > 0) {
             cooldownTimer -= delta;
         }
 
-        // Attack Logic
+        // **Attack Logic**
         if (attack && canAttack()) {
             isAttacking = true;
             stateTime = 0;
@@ -110,6 +124,19 @@ public class MiloCharacter extends BaseCharacter {
                 currentFrame = walkAnimation.getKeyFrame(stateTime, true);
             }
         }
+    }
+
+
+    public void dash() {
+        if (!isDashing) {
+            isDashing = true;
+            dashTimer = dashDuration;
+            stateTime = 0; // Reset animation time
+        }
+    }
+
+    public boolean isDashing() {
+        return isDashing;
     }
 
 
