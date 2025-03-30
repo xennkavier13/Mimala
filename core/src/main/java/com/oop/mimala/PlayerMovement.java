@@ -2,19 +2,20 @@ package com.oop.mimala;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import java.util.*;
 
 public class PlayerMovement {
     private float x, y;
     private float speed = 200f;
     private boolean isJumping = false;
+    private int jumpCount = 0; // Track jump count for double jump
+    private final int maxJumps = 2; // Allow up to two jumps
     private float jumpSpeed = 350f;
     private float velocityX = 0;
     private float velocityY = 0;
-    private float gravity = -900f; // Stronger gravity for realistic movement
-    private float ground = 150f; // Default ground level
+    private float gravity = -900f;
+    private float ground = 150f;
 
-    public PlayerMovement(float startX, float startY) { // Initialize at character position
+    public PlayerMovement(float startX, float startY) {
         this.x = startX;
         this.y = startY;
     }
@@ -33,26 +34,27 @@ public class PlayerMovement {
             velocityX = -speed;
         }
 
-        x += velocityX * delta; // Apply movement
+        x += velocityX * delta;
     }
 
     public void jump(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !isJumping) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && jumpCount < maxJumps) {
+            velocityY = jumpSpeed;
             isJumping = true;
-            velocityY = jumpSpeed; // Apply upward force
+            jumpCount++;
         }
 
         if (isJumping) {
-            velocityY += gravity * delta; // Apply gravity
+            velocityY += gravity * delta;
         }
 
-        y += velocityY * delta; // Apply vertical movement
+        y += velocityY * delta;
 
-        // Check if player lands on the ground
         if (y <= ground) {
             y = ground;
             velocityY = 0;
             isJumping = false;
+            jumpCount = 0; // Reset jump count when landing
         }
     }
 }
