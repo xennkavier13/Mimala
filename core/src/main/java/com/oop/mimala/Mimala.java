@@ -97,7 +97,7 @@ public class Mimala extends ApplicationAdapter {
         playerCharacter.update(delta, input.getVelocityX(), Gdx.input.isButtonJustPressed(Input.Buttons.LEFT));
 
         playerCharacter.move(input.getX(), input.getY());
-        backgroundStage.update(input.getVelocityX(), delta);
+        backgroundStage.update(delta);
 
         for (Humanoid enemy : enemies) {
             boolean shouldAttack = Math.abs(enemy.getX() - playerCharacter.getX()) <= enemy.getAttackRange();
