@@ -67,6 +67,24 @@ public class MiloCharacter extends BaseCharacter {
             return; // Stop updating anything else
         }
 
+        // **Getting Hit Animation**
+        if (isGettingHit && getHitAnimation != null) {
+            currentFrame = getHitAnimation.getKeyFrame(stateTime, false);
+
+            if (getHitAnimation.isAnimationFinished(stateTime)) {
+                isGettingHit = false; // Stop getting hit after animation ends
+            }
+            return; // Stop further updates when hit animation is playing
+        }
+
+        // **Attack Animation**
+        if (attack && !isAttacking && !isGettingHit) { // Ensure attack doesn't start if getting hit
+            isAttacking = true;
+            stateTime = 0;
+            attackCombo = (attackCombo + 1) % 3; // Cycle through attack animations
+            attackCombo = (attackCombo + 1) % 3;
+        }
+
         // **Dashing Logic - Process First**
         if (isDashing) {
             this.isDashing = true;  // Ensure dashing state is set

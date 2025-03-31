@@ -163,6 +163,13 @@ public abstract class BaseCharacter {
     public void takeDamage(int damage) {
         if (!isInvincible) { // Only take damage if not invincible
             health -= damage;
+            if (health <= 0) {
+                health = 0;
+            } else {
+                isGettingHit = true; // Play get hit animation
+                stateTime = 0; // Reset animation timer
+                isAttacking = false; // Stop attack if getting hit
+            }
             System.out.println("Character took damage: " + damage + ", Health: " + health);
         } else {
             System.out.println("Character is invincible and took no damage!");
